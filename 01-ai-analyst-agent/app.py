@@ -97,15 +97,15 @@ for i, (col, sug) in enumerate(zip(cols * 2, suggestions)):
 st.divider()
 
 # ── Chat history ───────────────────────────────────────────────────────────────
-for turn in st.session_state.chat:
+for idx, turn in enumerate(st.session_state.chat):
     st.markdown(f"<div class='user-bubble'>🧑 <strong>You:</strong> {turn['question']}</div>",
                 unsafe_allow_html=True)
     st.markdown(f"<div class='agent-bubble'>🤖 <strong>DataGPT:</strong> {turn['insight']}</div>",
                 unsafe_allow_html=True)
     if turn.get("fig"):
-        st.plotly_chart(turn["fig"], use_container_width=True)
+        st.plotly_chart(turn["fig"], use_container_width=True, key=f"chart_{idx}")
     if turn.get("table") is not None:
-        st.dataframe(turn["table"], use_container_width=True, height=200)
+        st.dataframe(turn["table"], use_container_width=True, height=200, key=f"table_{idx}")
 
 # ── Question input ─────────────────────────────────────────────────────────────
 question = st.chat_input("Ask a business question about your data…")
