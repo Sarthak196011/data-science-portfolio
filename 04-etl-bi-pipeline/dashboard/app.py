@@ -112,7 +112,8 @@ with tab2:
     top_prods = prod.sort_values('total_revenue', ascending=False).head(10)
     fig2 = px.bar(top_prods, x='total_revenue', y='product_name', orientation='h',
                   title='Top 10 Products by Revenue', color='total_revenue', color_continuous_scale='Teal')
-    fig2.update_layout(**LAY, height=400)
+    fig2.update_layout(**LAY)
+    fig2.update_layout(height=400)
     st.plotly_chart(fig2, use_container_width=True)
 
 with tab3:
