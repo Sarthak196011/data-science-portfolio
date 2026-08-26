@@ -98,12 +98,12 @@ with tab1:
 with tab2:
     c1,c2 = st.columns(2)
     with c1:
-        fig = px.bar(cat, x='product_category', y='total_revenue', title='Revenue by Category',
+        fig = px.bar(cat, x='category', y='total_revenue', title='Revenue by Category',
                      color='total_revenue', color_continuous_scale='Viridis')
         fig.update_layout(**LAY)
         st.plotly_chart(fig, use_container_width=True)
     with c2:
-        fig = px.pie(cat, names='product_category', values='total_revenue',
+        fig = px.pie(cat, names='category', values='total_revenue',
                      title='Revenue Share by Category',
                      color_discrete_sequence=px.colors.qualitative.Vivid)
         fig.update_layout(**LAY)
