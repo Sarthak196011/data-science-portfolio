@@ -19,6 +19,18 @@ app = FastAPI(
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
+# ── Root Welcome Endpoint ──────────────────────────────────────────────────────
+@app.get("/", tags=["General"])
+def root_welcome():
+    return {
+        "app_name": "ChurnShield MLOps API",
+        "status": "online",
+        "docs_url": "/docs",
+        "health_check": "/health",
+        "metrics": "/metrics",
+        "description": "Production ML serving endpoint for customer churn prediction. Powered by FastAPI + XGBoost."
+    }
+
 # ── Startup ────────────────────────────────────────────────────────────────────
 _model_artifacts = None
 _request_count   = 0
