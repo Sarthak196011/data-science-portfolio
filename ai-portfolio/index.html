@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI & Data Analytics Portfolio | Projects Showcase</title>
+  <meta name="description" content="Explore cutting-edge AI automation and data analytics projects — from predictive modeling to intelligent pipelines and NLP dashboards." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── CURSOR GLOW ──────────────────────────────── -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- ── PARTICLE CANVAS ─────────────────────────── -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- ── NAVBAR ──────────────────────────────────── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" id="navLogo">
+        <span class="logo-icon">⬡</span>
+        <span>DataMind<span class="accent">AI</span></span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#skills" class="nav-link">Skills</a></li>
+        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <a href="#contact" class="btn-hire" id="btnHire">Hire Me</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────── -->
+  <header class="hero" id="hero">
+    <div class="hero-bg-img"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Available for freelance &amp; full-time roles
+      </div>
+      <h1 class="hero-title">
+        <span class="line1">AI Automation</span>
+        <span class="line2">&amp; <span class="gradient-text">Data Analytics</span></span>
+        <span class="line3">Portfolio</span>
+      </h1>
+      <p class="hero-subtitle">
+        Transforming raw data into intelligent decisions — end-to-end ML pipelines,
+        predictive analytics, NLP, and automation systems built for real-world impact.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn-primary" id="ctaProjects">
+          <span>Explore Projects</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#contact" class="btn-ghost" id="ctaContact">Get in Touch</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number" data-target="12">0</span><span class="stat-plus">+</span>
+          <span class="stat-label">Projects</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" data-target="95">0</span><span class="stat-plus">%</span>
+          <span class="stat-label">Accuracy Rate</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" data-target="3">0</span><span class="stat-plus">+</span>
+          <span class="stat-label">Years Exp.</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-wheel"></div>
+      <span>Scroll to explore</span>
+    </div>
+  </header>
+
+  <!-- ── ABOUT ───────────────────────────────────── -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="section-tag">About Me</div>
+      <h2 class="section-title">Engineer. Analyst. <span class="gradient-text">AI Builder.</span></h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            I specialize in designing intelligent systems that blend <strong>machine learning</strong>,
+            <strong>data engineering</strong>, and <strong>automation</strong> to solve complex business
+            challenges. From building predictive models to deploying end-to-end data pipelines, I bridge
+            the gap between raw data and actionable insight.
+          </p>
+          <p>
+            My toolkit spans Python, SQL, cloud platforms, and modern ML frameworks — allowing me to
+            deliver scalable, production-ready solutions across industries including finance, healthcare,
+            and e-commerce.
+          </p>
+          <div class="about-highlights">
+            <div class="highlight-item">
+              <span class="highlight-icon">🧠</span>
+              <span>ML &amp; Deep Learning Specialist</span>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-icon">📊</span>
+              <span>End-to-End Data Pipelines</span>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-icon">🤖</span>
+              <span>AI Automation &amp; LLM Integration</span>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-icon">☁️</span>
+              <span>Cloud-Native Architecture</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual">
+          <div class="about-card glass-card">
+            <div class="about-card-header">
+              <div class="terminal-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <span class="terminal-label">profile.py</span>
+            </div>
+            <pre class="code-block"><code><span class="code-keyword">class</span> <span class="code-class">DataAnalyst</span>:
+  <span class="code-keyword">def</span> <span class="code-fn">__init__</span>(self):
+    self.name     = <span class="code-str">"AI Portfolio"</span>
+    self.focus    = <span class="code-str">"Data & AI"</span>
+    self.location = <span class="code-str">"India 🇮🇳"</span>
+    self.stack    = [
+      <span class="code-str">"Python"</span>, <span class="code-str">"SQL"</span>,
+      <span class="code-str">"TensorFlow"</span>, <span class="code-str">"Spark"</span>,
+      <span class="code-str">"AWS"</span>, <span class="code-str">"Tableau"</span>
+    ]
+
+  <span class="code-keyword">def</span> <span class="code-fn">goal</span>(self):
+    <span class="code-keyword">return</span> <span class="code-str">"Turn data → insight → value"</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SKILLS ──────────────────────────────────── -->
+  <section class="skills-section section" id="skills">
+    <div class="container">
+      <div class="section-tag">Tech Stack</div>
+      <h2 class="section-title">Tools &amp; <span class="gradient-text">Technologies</span></h2>
+      <div class="skills-grid">
+        <div class="skill-category glass-card reveal">
+          <div class="skill-cat-icon">🐍</div>
+          <h3>Languages &amp; Libraries</h3>
+          <div class="skill-pills">
+            <span class="pill">Python</span><span class="pill">SQL</span><span class="pill">R</span>
+            <span class="pill">Pandas</span><span class="pill">NumPy</span><span class="pill">Scikit-learn</span>
+            <span class="pill">Matplotlib</span><span class="pill">Seaborn</span>
+          </div>
+        </div>
+        <div class="skill-category glass-card reveal">
+          <div class="skill-cat-icon">🤖</div>
+          <h3>AI / ML Frameworks</h3>
+          <div class="skill-pills">
+            <span class="pill accent-pill">TensorFlow</span>
+            <span class="pill accent-pill">PyTorch</span>
+            <span class="pill accent-pill">Keras</span>
+            <span class="pill accent-pill">HuggingFace</span>
+            <span class="pill accent-pill">LangChain</span>
+            <span class="pill accent-pill">OpenAI API</span>
+          </div>
+        </div>
+        <div class="skill-category glass-card reveal">
+          <div class="skill-cat-icon">☁️</div>
+          <h3>Cloud &amp; Data Engineering</h3>
+          <div class="skill-pills">
+            <span class="pill purple-pill">AWS</span>
+            <span class="pill purple-pill">GCP BigQuery</span>
+            <span class="pill purple-pill">Apache Spark</span>
+            <span class="pill purple-pill">Airflow</span>
+            <span class="pill purple-pill">dbt</span>
+            <span class="pill purple-pill">Kafka</span>
+          </div>
+        </div>
+        <div class="skill-category glass-card reveal">
+          <div class="skill-cat-icon">📊</div>
+          <h3>Visualization &amp; BI</h3>
+          <div class="skill-pills">
+            <span class="pill green-pill">Tableau</span>
+            <span class="pill green-pill">Power BI</span>
+            <span class="pill green-pill">Plotly Dash</span>
+            <span class="pill green-pill">Superset</span>
+            <span class="pill green-pill">Grafana</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ─────────────────────────────────── -->
+  <section class="projects-section section" id="projects">
+    <div class="container">
+      <div class="section-tag">Portfolio</div>
+      <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
+      <p class="section-subtitle">12 end-to-end projects spanning AI automation, predictive analytics, NLP, and intelligent dashboards.</p>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-btn active" data-filter="all" id="filterAll">All Projects</button>
+        <button class="filter-btn" data-filter="ml" id="filterML">Machine Learning</button>
+        <button class="filter-btn" data-filter="nlp" id="filterNLP">NLP / LLM</button>
+        <button class="filter-btn" data-filter="analytics" id="filterAnalytics">Data Analytics</button>
+        <button class="filter-btn" data-filter="automation" id="filterAutomation">AI Automation</button>
+      </div>
+
+      <!-- Project Cards Grid -->
+      <div class="projects-grid" id="projectsGrid">
+
+        <!-- P1 -->
+        <article class="project-card glass-card reveal" data-category="ml" id="project1">
+          <div class="card-glow ml-glow"></div>
+          <div class="card-header">
+            <div class="card-icon ml-icon">🔮</div>
+            <div class="card-badges">
+              <span class="badge badge-ml">Machine Learning</span>
+              <span class="badge badge-featured">⭐ Featured</span>
+            </div>
+          </div>
+          <h3 class="card-title">Customer Churn Prediction Engine</h3>
+          <p class="card-desc">
+            End-to-end ML pipeline predicting customer churn with 94% accuracy using ensemble methods (XGBoost + LightGBM). Includes automated retraining via Airflow, SHAP explainability, and a live Plotly Dash dashboard for business stakeholders.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">XGBoost</span>
+            <span class="tech-tag">SHAP</span>
+            <span class="tech-tag">Airflow</span>
+            <span class="tech-tag">Plotly Dash</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">94%</span><span class="metric-key">Accuracy</span></div>
+            <div class="metric"><span class="metric-val">40%</span><span class="metric-key">Churn ↓</span></div>
+            <div class="metric"><span class="metric-val">1M+</span><span class="metric-key">Records</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p1-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p1-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P2 -->
+        <article class="project-card glass-card reveal" data-category="nlp" id="project2">
+          <div class="card-glow nlp-glow"></div>
+          <div class="card-header">
+            <div class="card-icon nlp-icon">💬</div>
+            <div class="card-badges">
+              <span class="badge badge-nlp">NLP / LLM</span>
+            </div>
+          </div>
+          <h3 class="card-title">Intelligent Document Q&amp;A System</h3>
+          <p class="card-desc">
+            RAG-based (Retrieval-Augmented Generation) document intelligence platform. Upload any PDF/Word doc and query it in natural language. Powered by LangChain + GPT-4 + FAISS vector store with citation-aware responses.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">LangChain</span>
+            <span class="tech-tag">GPT-4</span>
+            <span class="tech-tag">FAISS</span>
+            <span class="tech-tag">FastAPI</span>
+            <span class="tech-tag">React</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">98%</span><span class="metric-key">Relevance</span></div>
+            <div class="metric"><span class="metric-val">&lt;2s</span><span class="metric-key">Response</span></div>
+            <div class="metric"><span class="metric-val">500+</span><span class="metric-key">Docs Tested</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p2-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p2-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P3 -->
+        <article class="project-card glass-card reveal" data-category="analytics" id="project3">
+          <div class="card-glow analytics-glow"></div>
+          <div class="card-header">
+            <div class="card-icon analytics-icon">📊</div>
+            <div class="card-badges">
+              <span class="badge badge-analytics">Data Analytics</span>
+            </div>
+          </div>
+          <h3 class="card-title">Real-Time Sales Intelligence Dashboard</h3>
+          <p class="card-desc">
+            Enterprise-grade real-time analytics dashboard ingesting 50K+ transactions/day via Kafka. Powered by dbt transformations on BigQuery and visualized with Tableau — surfacing revenue, funnel, and cohort KPIs with drill-down capabilities.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">Kafka</span>
+            <span class="tech-tag">BigQuery</span>
+            <span class="tech-tag">dbt</span>
+            <span class="tech-tag">Tableau</span>
+            <span class="tech-tag">SQL</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">50K+</span><span class="metric-key">Events/Day</span></div>
+            <div class="metric"><span class="metric-val">Real</span><span class="metric-key">-Time</span></div>
+            <div class="metric"><span class="metric-val">15</span><span class="metric-key">KPI Views</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p3-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p3-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P4 -->
+        <article class="project-card glass-card reveal" data-category="automation" id="project4">
+          <div class="card-glow automation-glow"></div>
+          <div class="card-header">
+            <div class="card-icon automation-icon">⚙️</div>
+            <div class="card-badges">
+              <span class="badge badge-automation">AI Automation</span>
+              <span class="badge badge-featured">⭐ Featured</span>
+            </div>
+          </div>
+          <h3 class="card-title">AI-Powered ETL Automation Platform</h3>
+          <p class="card-desc">
+            Self-healing ETL platform that uses LLM agents to automatically detect schema drift, write corrective transformation code, and restart failed pipeline stages — reducing manual intervention by 85% across 20+ data sources.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">LangChain Agents</span>
+            <span class="tech-tag">Airflow</span>
+            <span class="tech-tag">Spark</span>
+            <span class="tech-tag">AWS Lambda</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">85%</span><span class="metric-key">Less Ops</span></div>
+            <div class="metric"><span class="metric-val">20+</span><span class="metric-key">Sources</span></div>
+            <div class="metric"><span class="metric-val">99.9%</span><span class="metric-key">Uptime</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p4-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p4-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P5 -->
+        <article class="project-card glass-card reveal" data-category="ml" id="project5">
+          <div class="card-glow ml-glow"></div>
+          <div class="card-header">
+            <div class="card-icon ml-icon">📈</div>
+            <div class="card-badges">
+              <span class="badge badge-ml">Machine Learning</span>
+            </div>
+          </div>
+          <h3 class="card-title">Stock Price Forecasting with LSTM</h3>
+          <p class="card-desc">
+            Multivariate time-series forecasting model combining LSTM networks with technical indicators (RSI, MACD, Bollinger Bands) and sentiment from financial news. Backtested on 5 years of data with 78% directional accuracy.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">PyTorch</span>
+            <span class="tech-tag">LSTM</span>
+            <span class="tech-tag">FinBERT</span>
+            <span class="tech-tag">yfinance</span>
+            <span class="tech-tag">Streamlit</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">78%</span><span class="metric-key">Direction</span></div>
+            <div class="metric"><span class="metric-val">5yr</span><span class="metric-key">Backtested</span></div>
+            <div class="metric"><span class="metric-val">10</span><span class="metric-key">Indicators</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p5-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p5-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P6 -->
+        <article class="project-card glass-card reveal" data-category="nlp" id="project6">
+          <div class="card-glow nlp-glow"></div>
+          <div class="card-header">
+            <div class="card-icon nlp-icon">😊</div>
+            <div class="card-badges">
+              <span class="badge badge-nlp">NLP / LLM</span>
+            </div>
+          </div>
+          <h3 class="card-title">Social Media Sentiment Analyzer</h3>
+          <p class="card-desc">
+            Real-time sentiment analysis pipeline ingesting Twitter/Reddit streams via APIs. Fine-tuned RoBERTa model classifies brand sentiment, tracks topic trends, and alerts on negative spikes — helping marketing teams act within minutes.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">RoBERTa</span>
+            <span class="tech-tag">HuggingFace</span>
+            <span class="tech-tag">Kafka</span>
+            <span class="tech-tag">Redis</span>
+            <span class="tech-tag">Grafana</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">92%</span><span class="metric-key">F1 Score</span></div>
+            <div class="metric"><span class="metric-val">10K+</span><span class="metric-key">Tweets/hr</span></div>
+            <div class="metric"><span class="metric-val">Live</span><span class="metric-key">Alerts</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p6-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p6-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P7 -->
+        <article class="project-card glass-card reveal" data-category="analytics" id="project7">
+          <div class="card-glow analytics-glow"></div>
+          <div class="card-header">
+            <div class="card-icon analytics-icon">🏥</div>
+            <div class="card-badges">
+              <span class="badge badge-analytics">Data Analytics</span>
+            </div>
+          </div>
+          <h3 class="card-title">Healthcare Patient Risk Stratification</h3>
+          <p class="card-desc">
+            Predictive analytics system for hospital readmission risk using EHR data. Applies gradient boosting and survival analysis to flag high-risk patients, integrated with Power BI for clinical team visibility and HIPAA-compliant data handling.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">Scikit-learn</span>
+            <span class="tech-tag">Lifelines</span>
+            <span class="tech-tag">Power BI</span>
+            <span class="tech-tag">PostgreSQL</span>
+            <span class="tech-tag">Azure</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">87%</span><span class="metric-key">AUC-ROC</span></div>
+            <div class="metric"><span class="metric-val">30%</span><span class="metric-key">Readmit ↓</span></div>
+            <div class="metric"><span class="metric-val">HIPAA</span><span class="metric-key">Compliant</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p7-demo">Case Study →</a>
+            <a href="#" class="card-link card-link-ghost" id="p7-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P8 -->
+        <article class="project-card glass-card reveal" data-category="automation" id="project8">
+          <div class="card-glow automation-glow"></div>
+          <div class="card-header">
+            <div class="card-icon automation-icon">📧</div>
+            <div class="card-badges">
+              <span class="badge badge-automation">AI Automation</span>
+            </div>
+          </div>
+          <h3 class="card-title">Automated Report Generation Agent</h3>
+          <p class="card-desc">
+            LLM-driven agentic system that autonomously queries databases, runs analyses, creates charts, and emails formatted executive reports — replacing 20+ hours/week of manual analyst work across finance and ops teams.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">OpenAI API</span>
+            <span class="tech-tag">LangGraph</span>
+            <span class="tech-tag">Jinja2</span>
+            <span class="tech-tag">Matplotlib</span>
+            <span class="tech-tag">SendGrid</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">20hr</span><span class="metric-key">Saved/wk</span></div>
+            <div class="metric"><span class="metric-val">100%</span><span class="metric-key">Automated</span></div>
+            <div class="metric"><span class="metric-val">Daily</span><span class="metric-key">Reports</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p8-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p8-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P9 -->
+        <article class="project-card glass-card reveal" data-category="ml" id="project9">
+          <div class="card-glow ml-glow"></div>
+          <div class="card-header">
+            <div class="card-icon ml-icon">🛒</div>
+            <div class="card-badges">
+              <span class="badge badge-ml">Machine Learning</span>
+            </div>
+          </div>
+          <h3 class="card-title">E-Commerce Recommendation Engine</h3>
+          <p class="card-desc">
+            Hybrid recommendation system blending collaborative filtering (ALS matrix factorization) with content-based NLP embeddings. Deployed on AWS SageMaker with A/B testing infrastructure, driving 22% uplift in average order value.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">PySpark ALS</span>
+            <span class="tech-tag">SentenceTransformers</span>
+            <span class="tech-tag">SageMaker</span>
+            <span class="tech-tag">FastAPI</span>
+            <span class="tech-tag">DynamoDB</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">22%</span><span class="metric-key">AOV ↑</span></div>
+            <div class="metric"><span class="metric-val">&lt;50ms</span><span class="metric-key">Latency</span></div>
+            <div class="metric"><span class="metric-val">5M+</span><span class="metric-key">Users</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p9-demo">Case Study →</a>
+            <a href="#" class="card-link card-link-ghost" id="p9-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P10 -->
+        <article class="project-card glass-card reveal" data-category="nlp" id="project10">
+          <div class="card-glow nlp-glow"></div>
+          <div class="card-header">
+            <div class="card-icon nlp-icon">📄</div>
+            <div class="card-badges">
+              <span class="badge badge-nlp">NLP / LLM</span>
+            </div>
+          </div>
+          <h3 class="card-title">Contract Intelligence Extraction System</h3>
+          <p class="card-desc">
+            NLP pipeline for automated legal contract analysis — extracting key clauses, parties, dates, and risk flags using spaCy NER + GPT-4 structured output. Processes 200+ contracts/day with 96% extraction accuracy for a legal-tech startup.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">spaCy</span>
+            <span class="tech-tag">GPT-4 API</span>
+            <span class="tech-tag">Pydantic</span>
+            <span class="tech-tag">Elasticsearch</span>
+            <span class="tech-tag">Docker</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">96%</span><span class="metric-key">Accuracy</span></div>
+            <div class="metric"><span class="metric-val">200+</span><span class="metric-key">Docs/Day</span></div>
+            <div class="metric"><span class="metric-val">70%</span><span class="metric-key">Time ↓</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p10-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p10-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P11 -->
+        <article class="project-card glass-card reveal" data-category="analytics" id="project11">
+          <div class="card-glow analytics-glow"></div>
+          <div class="card-header">
+            <div class="card-icon analytics-icon">⚡</div>
+            <div class="card-badges">
+              <span class="badge badge-analytics">Data Analytics</span>
+            </div>
+          </div>
+          <h3 class="card-title">IoT Predictive Maintenance Analytics</h3>
+          <p class="card-desc">
+            Streaming analytics system for manufacturing IoT sensors — detecting anomalies in vibration, temperature, and pressure data using Isolation Forest + Autoencoders. Predicts equipment failures 48 hours in advance, saving $2M in downtime costs.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">Kafka Streams</span>
+            <span class="tech-tag">Flink</span>
+            <span class="tech-tag">TensorFlow</span>
+            <span class="tech-tag">InfluxDB</span>
+            <span class="tech-tag">Grafana</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">48hr</span><span class="metric-key">Early Warn</span></div>
+            <div class="metric"><span class="metric-val">$2M</span><span class="metric-key">Saved</span></div>
+            <div class="metric"><span class="metric-val">99%</span><span class="metric-key">Precision</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p11-demo">Case Study →</a>
+            <a href="#" class="card-link card-link-ghost" id="p11-code">GitHub ↗</a>
+          </div>
+        </article>
+
+        <!-- P12 -->
+        <article class="project-card glass-card reveal" data-category="automation" id="project12">
+          <div class="card-glow automation-glow"></div>
+          <div class="card-header">
+            <div class="card-icon automation-icon">🕷️</div>
+            <div class="card-badges">
+              <span class="badge badge-automation">AI Automation</span>
+              <span class="badge badge-featured">⭐ Featured</span>
+            </div>
+          </div>
+          <h3 class="card-title">Agentic Web Research &amp; Synthesis Bot</h3>
+          <p class="card-desc">
+            Multi-agent AI system that autonomously browses the web, scrapes structured data, deduplicates sources, synthesizes findings, and delivers formatted research briefs — completing 8-hour research tasks in under 15 minutes.
+          </p>
+          <div class="card-tech">
+            <span class="tech-tag">LangGraph</span>
+            <span class="tech-tag">GPT-4o</span>
+            <span class="tech-tag">Playwright</span>
+            <span class="tech-tag">Qdrant</span>
+            <span class="tech-tag">Celery</span>
+          </div>
+          <div class="card-metrics">
+            <div class="metric"><span class="metric-val">15min</span><span class="metric-key">vs 8hrs</span></div>
+            <div class="metric"><span class="metric-val">Multi</span><span class="metric-key">-Agent</span></div>
+            <div class="metric"><span class="metric-val">Auto</span><span class="metric-key">mated</span></div>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="card-link" id="p12-demo">Live Demo →</a>
+            <a href="#" class="card-link card-link-ghost" id="p12-code">GitHub ↗</a>
+          </div>
+        </article>
+
+      </div><!-- /projects-grid -->
+    </div>
+  </section>
+
+  <!-- ── CONTACT ──────────────────────────────────── -->
+  <section class="contact-section section" id="contact">
+    <div class="container">
+      <div class="section-tag">Contact</div>
+      <h2 class="section-title">Let's Build Something <span class="gradient-text">Intelligent</span></h2>
+      <p class="section-subtitle">Open to freelance projects, full-time opportunities, and collaborations in AI &amp; data.</p>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item glass-card">
+            <span class="contact-icon">📧</span>
+            <div>
+              <div class="contact-label">Email</div>
+              <a href="mailto:hello@datamindai.com" class="contact-value" id="emailLink">hello@datamindai.com</a>
+            </div>
+          </div>
+          <div class="contact-item glass-card">
+            <span class="contact-icon">💼</span>
+            <div>
+              <div class="contact-label">LinkedIn</div>
+              <a href="#" class="contact-value" id="linkedinLink">linkedin.com/in/datamindai</a>
+            </div>
+          </div>
+          <div class="contact-item glass-card">
+            <span class="contact-icon">🐙</span>
+            <div>
+              <div class="contact-label">GitHub</div>
+              <a href="#" class="contact-value" id="githubLink">github.com/datamindai</a>
+            </div>
+          </div>
+          <div class="contact-item glass-card">
+            <span class="contact-icon">📍</span>
+            <div>
+              <div class="contact-label">Location</div>
+              <span class="contact-value">India — Remote Worldwide 🌍</span>
+            </div>
+          </div>
+        </div>
+        <form class="contact-form glass-card" id="contactForm">
+          <div class="form-group">
+            <label for="nameInput">Your Name</label>
+            <input type="text" id="nameInput" name="name" placeholder="John Doe" autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="emailInput">Email Address</label>
+            <input type="email" id="emailInput" name="email" placeholder="john@company.com" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="projectType">Project Type</label>
+            <select id="projectType" name="type">
+              <option value="">Select a category...</option>
+              <option>ML / Predictive Modeling</option>
+              <option>NLP / LLM Integration</option>
+              <option>Data Pipeline &amp; Engineering</option>
+              <option>BI Dashboard &amp; Analytics</option>
+              <option>AI Automation Agent</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="messageInput">Message</label>
+            <textarea id="messageInput" name="message" rows="4" placeholder="Tell me about your project..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <span>Send Message</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+          </button>
+          <div class="form-success" id="formSuccess">
+            ✅ Message sent! I'll get back to you within 24 hours.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ───────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-logo">
+        <span class="logo-icon">⬡</span>
+        DataMind<span class="accent">AI</span>
+      </div>
+      <p class="footer-copy">© 2026 DataMindAI · Built with passion for data &amp; intelligence</p>
+      <div class="footer-links">
+        <a href="#about" id="footAbout">About</a>
+        <a href="#projects" id="footProjects">Projects</a>
+        <a href="#contact" id="footContact">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
