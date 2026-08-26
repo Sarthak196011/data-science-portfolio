@@ -51,7 +51,7 @@ with st.sidebar:
         st.rerun()
 
 # ── Load data ──────────────────────────────────────────────────────────────────
-from agent.tools import load_data, run_query, make_chart
+from agent.tools import load_data, run_query
 from agent.prompts import build_prompt, DEMO_ANSWERS
 
 @st.cache_data
