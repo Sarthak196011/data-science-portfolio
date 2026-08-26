@@ -79,26 +79,26 @@ def show():
             fig = go.Figure(go.Indicator(
                 mode="gauge+number+delta",
                 value=pct,
-                title={'text': "Churn Probability", 'font': {'size': 20, 'color': 'white'}},
-                number={'suffix': "%", 'font': {'color': 'white', 'size': 48}},
+                title={'text': "Churn Probability", 'font': {'size': 20, 'color': '#0f172a'}},
+                number={'suffix': "%", 'font': {'color': '#0f172a', 'size': 48}},
                 gauge={
                     'axis': {'range': [0, 100], 'tickcolor': 'gray'},
                     'bar': {'color': '#ef4444' if pct > 60 else '#f59e0b' if pct > 35 else '#10b981'},
-                    'bgcolor': 'rgba(255,255,255,0.05)',
-                    'bordercolor': 'rgba(255,255,255,0.1)',
+                    'bgcolor': 'rgba(15,23,42,0.05)',
+                    'bordercolor': 'rgba(15,23,42,0.1)',
                     'steps': [
-                        {'range': [0, 35],  'color': 'rgba(16,185,129,0.1)'},
-                        {'range': [35, 60], 'color': 'rgba(245,158,11,0.1)'},
-                        {'range': [60, 100],'color': 'rgba(239,68,68,0.1)'},
+                        {'range': [0, 35],  'color': 'rgba(16,185,129,0.08)'},
+                        {'range': [35, 60], 'color': 'rgba(245,158,11,0.08)'},
+                        {'range': [60, 100],'color': 'rgba(239,68,68,0.08)'},
                     ],
-                    'threshold': {'line': {'color': 'white', 'width': 3}, 'value': 50}
+                    'threshold': {'line': {'color': '#0f172a', 'width': 3}, 'value': 50}
                 }
             ))
             fig.update_layout(
                 height=300,
                 paper_bgcolor='rgba(0,0,0,0)',
                 plot_bgcolor='rgba(0,0,0,0)',
-                font={'color': 'white'},
+                font={'color': '#0f172a'},
             )
             st.plotly_chart(fig, use_container_width=True)
 
@@ -113,16 +113,16 @@ def show():
                 </div>""", unsafe_allow_html=True)
             elif pct > 35:
                 st.markdown(f"""
-                <div style='background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.4);border-radius:10px;padding:16px'>
+                <div style='background:#fef3c7;border:1px solid #fde68a;border-radius:10px;padding:16px;color:#92400e'>
                   <h3>⚠️ MEDIUM CHURN RISK</h3>
-                  <p style='font-size:1.5rem;font-weight:800;color:#f59e0b'>{pct:.1f}% probability</p>
+                  <p style='font-size:1.5rem;font-weight:800;color:#d97706'>{pct:.1f}% probability</p>
                   <p>Monitor this customer. Proactive outreach advised.</p>
                 </div>""", unsafe_allow_html=True)
             else:
                 st.markdown(f"""
                 <div class='churn-low'>
                   <h3>✅ LOW CHURN RISK</h3>
-                  <p style='font-size:1.5rem;font-weight:800;color:#10b981'>{pct:.1f}% probability</p>
+                  <p style='font-size:1.5rem;font-weight:800;color:#166534'>{pct:.1f}% probability</p>
                   <p>Customer appears satisfied. Standard engagement recommended.</p>
                 </div>""", unsafe_allow_html=True)
 
@@ -150,8 +150,8 @@ def show():
         fig2.update_layout(
             title="Top Feature Importances (XGBoost)",
             paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(255,255,255,0.02)',
-            font={'color': 'white'},
+            plot_bgcolor='rgba(0,0,0,0.02)',
+            font={'color': '#0f172a'},
             xaxis_title="Importance Score",
             height=350,
         )

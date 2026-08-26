@@ -15,12 +15,14 @@ st.set_page_config(page_title="DataMind BI — Analytics Dashboard", page_icon="
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
-html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; }
-[data-testid="stAppViewContainer"] { background: linear-gradient(135deg,#05050f,#0a0a1a); }
-.kpi-card { background:rgba(255,255,255,0.04); border:1px solid rgba(0,212,255,0.15); border-radius:14px; padding:20px; text-align:center; }
-.kpi-val  { font-size:2rem; font-weight:800; color:#00d4ff; }
-.kpi-lbl  { font-size:0.78rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; }
-.kpi-delta{ font-size:0.88rem; color:#10b981; font-weight:600; }
+html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color: #f4f4f5 !important; }
+[data-testid="stAppViewContainer"] { background-color: #09090b !important; }
+[data-testid="stSidebar"] { background-color: #18181b !important; border-right: 1px solid #27272a !important; }
+.kpi-card { background: #18181b; border: 1px solid #27272a; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: 0.2s; }
+.kpi-card:hover { border-color: #06b6d4; box-shadow: 0 0 10px rgba(6,182,212,0.1); }
+.kpi-val  { font-size: 2.2rem; font-weight: 800; color: #06b6d4; }
+.kpi-lbl  { font-size: 0.78rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.1em; }
+.kpi-delta{ font-size: 0.88rem; color: #10b981; font-weight: 600; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -70,8 +72,8 @@ for col, (val, lbl, delta) in zip([k1,k2,k3,k4,k5], kpis):
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-LAY = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(255,255,255,0.02)',
-           font=dict(color='white'), height=370)
+LAY = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(255,255,255,0.01)',
+           font=dict(color='#f4f4f5'), height=370)
 
 # ── Tabs ───────────────────────────────────────────────────────────────────────
 tab1,tab2,tab3,tab4,tab5 = st.tabs(["📈 Revenue Trends","🏆 Product Analytics","👥 Customer Cohorts","🌍 Regional","🔍 Data Explorer"])
@@ -80,18 +82,18 @@ with tab1:
     c1,c2 = st.columns(2)
     with c1:
         fig = px.area(mon, x='year_month', y='total_revenue', title='Monthly Revenue Trend',
-                      color_discrete_sequence=['#00d4ff'])
-        fig.update_traces(fill='tozeroy', fillcolor='rgba(0,212,255,0.08)')
+                      color_discrete_sequence=['#06b6d4'])
+        fig.update_traces(fill='tozeroy', fillcolor='rgba(6,182,212,0.05)')
         fig.update_layout(**LAY)
         st.plotly_chart(fig, use_container_width=True)
     with c2:
         fig = px.bar(mon, x='year_month', y='unique_customers', title='Monthly Unique Customers',
-                     color='unique_customers', color_continuous_scale='Blues')
+                     color='unique_customers', color_continuous_scale='Teal')
         fig.update_layout(**LAY)
         st.plotly_chart(fig, use_container_width=True)
 
     fig2 = px.line(mon, x='year_month', y='avg_order_value', title='Average Order Value Over Time',
-                   markers=True, color_discrete_sequence=['#8b5cf6'])
+                   markers=True, color_discrete_sequence=['#06b6d4'])
     fig2.update_layout(**LAY)
     st.plotly_chart(fig2, use_container_width=True)
 
@@ -123,18 +125,18 @@ with tab3:
     with c1:
         fig = px.pie(seg_data, names='customer_segment', values='revenue',
                      title='Revenue by Customer Segment',
-                     color_discrete_sequence=['#00d4ff','#8b5cf6','#10b981'])
+                     color_discrete_sequence=['#06b6d4','#10b981','#3b82f6'])
         fig.update_layout(**LAY)
         st.plotly_chart(fig, use_container_width=True)
     with c2:
         clv = cust[cust.total_revenue>0].sort_values('total_revenue',ascending=False).head(20)
         fig = px.bar(clv, x='customer_id', y='total_revenue', title='Top 20 Customers by LTV',
-                     color='segment', color_discrete_sequence=['#00d4ff','#8b5cf6','#10b981'])
+                     color='segment', color_discrete_sequence=['#06b6d4','#10b981','#3b82f6'])
         fig.update_layout(**LAY)
         st.plotly_chart(fig, use_container_width=True)
 
     fig2 = px.histogram(cust[cust.total_revenue>0], x='total_revenue', nbins=30,
-                        title='Customer Revenue Distribution', color_discrete_sequence=['#00d4ff'])
+                        title='Customer Revenue Distribution', color_discrete_sequence=['#06b6d4'])
     fig2.update_layout(**LAY)
     st.plotly_chart(fig2, use_container_width=True)
 
@@ -156,7 +158,7 @@ with tab4:
 
     channel_data = fact.groupby('channel').agg(revenue=('revenue','sum'),orders=('order_id','count')).reset_index()
     fig2 = px.bar(channel_data, x='channel', y='revenue', title='Revenue by Sales Channel',
-                  color='channel', color_discrete_sequence=['#00d4ff','#8b5cf6','#10b981'])
+                  color='channel', color_discrete_sequence=['#06b6d4','#10b981','#3b82f6'])
     fig2.update_layout(**LAY)
     st.plotly_chart(fig2, use_container_width=True)
 

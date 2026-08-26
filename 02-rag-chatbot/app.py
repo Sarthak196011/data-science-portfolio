@@ -16,13 +16,14 @@ st.set_page_config(
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
-html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; }
-[data-testid="stAppViewContainer"] { background: linear-gradient(135deg,#05050f,#0a0a1a); }
-[data-testid="stSidebar"] { background: rgba(255,255,255,0.03) !important; border-right: 1px solid rgba(255,255,255,0.08) !important; }
-.chat-msg-user { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); border-radius:12px; padding:14px; margin:8px 0; }
-.chat-msg-bot  { background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius:12px; padding:14px; margin:8px 0; }
-.source-badge  { background: rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:6px; padding:4px 10px; font-size:0.78rem; color:#10b981; display:inline-block; margin:3px; }
-.stButton>button { background: linear-gradient(135deg,#00d4ff,#8b5cf6) !important; color:white !important; font-weight:700 !important; border:none !important; border-radius:50px !important; }
+html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color: #37352f !important; }
+[data-testid="stAppViewContainer"] { background-color: #fcfcfc !important; }
+[data-testid="stSidebar"] { background-color: #f7f7f7 !important; border-right: 1px solid #edece9 !important; }
+.chat-msg-user { background-color: #f1f1f0; border: none; border-radius: 12px; padding: 14px; margin: 10px 0; color: #37352f; }
+.chat-msg-bot  { background-color: #fdf6e2; border: 1px solid #f5ebd0; border-radius: 12px; padding: 14px; margin: 10px 0; color: #37352f; }
+.source-badge  { background-color: #e2f5ec; border: 1px solid #bcead3; border-radius: 6px; padding: 4px 10px; font-size: 0.78rem; color: #0f7b47; display: inline-block; margin: 3px; font-weight: 600; }
+.stButton>button { background: #df7b00 !important; color: white !important; font-weight: 600 !important; border: none !important; border-radius: 6px !important; padding: 8px 20px !important; transition: 0.2s; }
+.stButton>button:hover { background: #c66c00 !important; }
 </style>
 """, unsafe_allow_html=True)
 

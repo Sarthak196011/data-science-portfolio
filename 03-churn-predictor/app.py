@@ -11,38 +11,41 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Inject custom CSS ─────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
 
-html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; }
+html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color: #0f172a !important; }
 
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #05050f 0%, #0a0a1a 100%);
+    background-color: #f8fafc !important;
 }
 [data-testid="stSidebar"] {
-    background: rgba(255,255,255,0.03) !important;
-    border-right: 1px solid rgba(255,255,255,0.08) !important;
+    background-color: #ffffff !important;
+    border-right: 1px solid #e2e8f0 !important;
 }
 .metric-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(0,212,255,0.15);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 20px;
     text-align: center;
-    transition: 0.3s;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
 }
-.metric-card:hover { border-color: rgba(0,212,255,0.4); }
-.metric-val { font-size: 2rem; font-weight: 800; color: #00d4ff; }
-.metric-lbl { font-size: 0.8rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
-.churn-high   { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); border-radius:10px; padding:16px; }
-.churn-low    { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.4); border-radius:10px; padding:16px; }
+.metric-card:hover { border-color: #cbd5e1; }
+.metric-val { font-size: 2.2rem; font-weight: 800; color: #0ea5e9; }
+.metric-lbl { font-size: 0.8rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; }
+.churn-high   { background: #fef2f2; border: 1px solid #fecaca; border-radius:10px; padding:16px; color: #991b1b; }
+.churn-low    { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius:10px; padding:16px; color: #166534; }
 .stButton>button {
-    background: linear-gradient(135deg,#00d4ff,#8b5cf6) !important;
-    color: white !important; font-weight: 700 !important;
-    border: none !important; border-radius: 50px !important;
-    padding: 12px 32px !important;
+    background: #0ea5e9 !important;
+    color: white !important; font-weight: 600 !important;
+    border: none !important; border-radius: 6px !important;
+    padding: 10px 24px !important;
+    transition: 0.2s;
+}
+.stButton>button:hover {
+    background: #0284c7 !important;
 }
 </style>
 """, unsafe_allow_html=True)

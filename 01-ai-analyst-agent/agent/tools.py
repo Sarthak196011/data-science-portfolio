@@ -101,7 +101,7 @@ def run_query(df: pd.DataFrame, question: str, demo_mode: bool = True, api_key: 
 
 
 # ── Chart generators ──────────────────────────────────────────────────────────
-_LAYOUT = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(255,255,255,0.02)', font=dict(color='white'), height=380)
+_LAYOUT = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0.015)', font=dict(color='#2c2825'), height=380)
 
 def _monthly_revenue(df):
     df2 = df.copy()
@@ -109,29 +109,29 @@ def _monthly_revenue(df):
     df2['month_label'] = df2['order_date'].dt.strftime('%b')
     data = df2.groupby(['month','month_label'])['revenue'].sum().reset_index().sort_values('month')
     fig = px.area(data, x='month_label', y='revenue', title='Monthly Revenue 2023',
-                  color_discrete_sequence=['#00d4ff'])
-    fig.update_traces(fill='tozeroy', fillcolor='rgba(0,212,255,0.1)')
+                  color_discrete_sequence=['#6366f1'])
+    fig.update_traces(fill='tozeroy', fillcolor='rgba(99,102,241,0.08)')
     fig.update_layout(**_LAYOUT)
     return fig, data
 
 def _by_category(df):
     data = df.groupby('product_category')['revenue'].sum().reset_index().sort_values('revenue',ascending=False)
     fig  = px.bar(data, x='product_category', y='revenue', title='Revenue by Product Category',
-                  color='revenue', color_continuous_scale='Viridis')
+                  color='revenue', color_continuous_scale='Purples')
     fig.update_layout(**_LAYOUT)
     return fig, data
 
 def _by_country(df):
     data = df.groupby('country')['revenue'].sum().reset_index().sort_values('revenue',ascending=False)
     fig  = px.bar(data, x='revenue', y='country', orientation='h', title='Revenue by Country',
-                  color='revenue', color_continuous_scale='Blues')
+                  color='revenue', color_continuous_scale='Sunset')
     fig.update_layout(**_LAYOUT)
     return fig, data
 
 def _by_segment(df):
     data = df.groupby('customer_segment').agg(revenue=('revenue','sum'), orders=('order_id','count')).reset_index()
     fig  = px.pie(data, names='customer_segment', values='revenue', title='Revenue by Customer Segment',
-                  color_discrete_sequence=['#00d4ff','#8b5cf6','#10b981'])
+                  color_discrete_sequence=['#6366f1','#f43f5e','#10b981'])
     fig.update_layout(**_LAYOUT)
     return fig, data
 
@@ -139,7 +139,7 @@ def _by_payment(df):
     data = df.groupby('payment_method').size().reset_index(name='orders')
     data['pct'] = data['orders']/data['orders'].sum()*100
     fig  = px.pie(data, names='payment_method', values='orders', title='Orders by Payment Method',
-                  color_discrete_sequence=['#00d4ff','#8b5cf6','#10b981','#f59e0b'])
+                  color_discrete_sequence=['#6366f1','#f43f5e','#10b981','#f59e0b'])
     fig.update_layout(**_LAYOUT)
     return fig, data
 

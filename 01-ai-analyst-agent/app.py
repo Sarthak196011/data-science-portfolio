@@ -17,13 +17,13 @@ st.set_page_config(
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
-html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; }
-[data-testid="stAppViewContainer"] { background: linear-gradient(135deg,#05050f,#0a0a1a); }
-[data-testid="stSidebar"] { background: rgba(255,255,255,0.03) !important; border-right: 1px solid rgba(255,255,255,0.08) !important; }
-.user-bubble { background: rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.2); border-radius:14px; padding:14px 18px; margin:10px 0; }
-.agent-bubble { background: rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2); border-radius:14px; padding:14px 18px; margin:10px 0; }
-.insight-box { background: rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:10px; padding:14px; margin-top:10px; }
-.stButton>button { background: linear-gradient(135deg,#00d4ff,#8b5cf6) !important; color:white !important; font-weight:700 !important; border:none !important; border-radius:50px !important; }
+html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color: #2c2825 !important; }
+[data-testid="stAppViewContainer"] { background-color: #fbfaf7 !important; }
+[data-testid="stSidebar"] { background-color: #f4f1ea !important; border-right: 1px solid #e5dfd3 !important; }
+.user-bubble { background-color: #f0ebe4; border: 1px solid #dfd8cb; border-radius: 16px; padding: 14px 18px; margin: 12px 0; color: #2c2825; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+.agent-bubble { background-color: #f5f3ff; border: 1px solid #e0dbff; border-radius: 16px; padding: 14px 18px; margin: 12px 0; color: #2c2825; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+.stButton>button { background: #6366f1 !important; color: white !important; font-weight: 600 !important; border: none !important; border-radius: 8px !important; padding: 8px 24px !important; transition: 0.2s; }
+.stButton>button:hover { background: #4f46e5 !important; transform: translateY(-1px); }
 </style>
 """, unsafe_allow_html=True)
 
