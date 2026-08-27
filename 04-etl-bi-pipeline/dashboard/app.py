@@ -273,7 +273,8 @@ with tab2:
     fig2.update_layout(**{**LAY, 'height': 420})
     st.plotly_chart(fig2, use_container_width=True)
     st.markdown("<div class='section-header'>🔮 3D Product Value Space — Price vs Revenue vs Orders</div>", unsafe_allow_html=True)
-    fig3d = px.scatter_3d(prod, x='unit_price', y='total_revenue', z='total_orders', color='category', title='Product Performance 3D Map', labels={'unit_price': 'Unit Price ($)', 'total_revenue': 'Total Revenue ($)', 'total_orders': 'Total Orders'}, color_discrete_sequence=['#06b6d4','#8b5cf6','#10b981','#f59e0b','#ec4899','#ef4444'])
+    prod3d = prod.dropna(subset=['list_price','total_revenue','total_orders','category'])
+    fig3d = px.scatter_3d(prod3d, x='list_price', y='total_revenue', z='total_orders', color='category', title='Product Performance 3D Map', labels={'list_price': 'List Price ($)', 'total_revenue': 'Total Revenue ($)', 'total_orders': 'Total Orders'}, color_discrete_sequence=['#06b6d4','#8b5cf6','#10b981','#f59e0b','#ec4899','#ef4444'])
     fig3d.update_traces(marker=dict(size=5, line=dict(width=0.5, color='rgba(255,255,255,0.2)')))
     fig3d.update_layout(
         scene=dict(
