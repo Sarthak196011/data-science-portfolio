@@ -1,4 +1,4 @@
-﻿"""
+"""
 BI Dashboard — Streamlit multi-tab app powered by DuckDB warehouse.
 Run pipeline first: python run_pipeline.py
 Then: streamlit run dashboard/app.py
@@ -270,7 +270,7 @@ with tab2:
         st.plotly_chart(fig, use_container_width=True)
     top_prods = prod.sort_values('total_revenue', ascending=False).head(10)
     fig2 = px.bar(top_prods, x='total_revenue', y='product_name', orientation='h', title='Top 10 Products by Revenue', color='total_revenue', color_continuous_scale=['#0e7490','#06b6d4','#67e8f9'])
-    fig2.update_layout(**LAY, height=420)
+    fig2.update_layout(**{**LAY, 'height': 420})
     st.plotly_chart(fig2, use_container_width=True)
     st.markdown("<div class='section-header'>🔮 3D Product Value Space — Price vs Revenue vs Orders</div>", unsafe_allow_html=True)
     fig3d = px.scatter_3d(prod, x='unit_price', y='total_revenue', z='total_orders', color='category', title='Product Performance 3D Map', labels={'unit_price': 'Unit Price ($)', 'total_revenue': 'Total Revenue ($)', 'total_orders': 'Total Orders'}, color_discrete_sequence=['#06b6d4','#8b5cf6','#10b981','#f59e0b','#ec4899','#ef4444'])
