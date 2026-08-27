@@ -51,7 +51,7 @@ cat   = data['agg_category']
 
 # ── Sidebar SLA & Freshness Log ────────────────────────────────────────────────
 with st.sidebar:
-    st.image(os.path.join(os.path.dirname(__file__), "images", "etl_3d_pipeline.jpg"), use_container_width=True)
+    st.image(os.path.join(os.path.dirname(__file__), "..", "images", "etl_3d_pipeline.jpg"), use_container_width=True)
     st.markdown("## 🏗️ DataMind BI")
     st.markdown("*DuckDB E-Commerce Analytics*")
     st.divider()
