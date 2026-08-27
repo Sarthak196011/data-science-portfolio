@@ -29,6 +29,7 @@ html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
+    st.image("images/agent_3d_brain.jpg", use_container_width=True)
     st.markdown("## 🤖 DataGPT")
     st.markdown("*AI-Powered Data Analyst Agent*")
     st.divider()
@@ -40,14 +41,42 @@ with st.sidebar:
         st.info("🎭 Demo mode active")
     st.divider()
 
-    st.markdown("**📊 Dataset Info**")
-    st.markdown("- 1,000 e-commerce orders")
-    st.markdown("- 12 features")
-    st.markdown("- Jan 2023 – Dec 2023")
+    # Voice Query Input
+    audio_file = st.audio_input("🎙️ Speak your question")
+    if audio_file is not None:
+        audio_bytes = audio_file.read()
+        if "last_audio" not in st.session_state or st.session_state.last_audio != audio_bytes:
+            st.session_state.last_audio = audio_bytes
+            if not demo_mode:
+                try:
+                    import openai
+                    client = openai.OpenAI(api_key=openai_key)
+                    with open("temp_audio.wav", "wb") as f:
+                        f.write(audio_bytes)
+                    with open("temp_audio.wav", "rb") as f:
+                        transcript = client.audio.transcriptions.create(
+                            model="whisper-1",
+                            file=f
+                        )
+                    st.session_state.pending = transcript.text
+                    import os
+                    os.remove("temp_audio.wav")
+                except Exception as e:
+                    st.error(f"Voice transcription error: {str(e)}")
+            else:
+                st.session_state.pending = "Show monthly revenue trend"
+            st.rerun()
+
     st.divider()
+    st.markdown("**📊 Actions**")
+    if st.button("📊 Show Data Profile Report"):
+        st.session_state.show_profile = True
+        st.rerun()
 
     if st.button("🔄 Reset Conversation"):
         st.session_state.chat = []
+        if "show_profile" in st.session_state:
+            del st.session_state.show_profile
         st.rerun()
 
 # ── Load data ──────────────────────────────────────────────────────────────────
@@ -69,8 +98,10 @@ st.markdown("# 🤖 DataGPT — Ask Your Data Anything")
 st.markdown("Type a business question below. The AI agent will query the dataset, build a chart, and write insights.")
 st.divider()
 
-# ── Dataset preview ────────────────────────────────────────────────────────────
-with st.expander("📋 View Dataset (E-Commerce Orders 2023)"):
+# ── Dataset preview & profiling ────────────────────────────────────────────────
+tab1, tab2 = st.tabs(["📋 Dataset Preview", "📊 Data Profile & Stats"])
+
+with tab1:
     st.dataframe(df.head(20), use_container_width=True)
     c1,c2,c3,c4 = st.columns(4)
     c1.metric("Total Orders",   f"{len(df):,}")
@@ -78,14 +109,33 @@ with st.expander("📋 View Dataset (E-Commerce Orders 2023)"):
     c3.metric("Avg Order Value",f"${df['revenue'].mean():.0f}")
     c4.metric("Products",       df['product_category'].nunique())
 
+with tab2:
+    st.markdown("### 📊 Automated Statistical Profile")
+    stats_df = df.describe(include='all').T.fillna('-')
+    st.dataframe(stats_df, use_container_width=True)
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.markdown("**Null Value Counts:**")
+        nulls = df.isnull().sum().reset_index()
+        nulls.columns = ["Column", "Null Count"]
+        st.dataframe(nulls, use_container_width=True, height=220)
+    with col_b:
+        st.markdown("**Data Types & Unique Values:**")
+        uniques = pd.DataFrame({
+            "Dtype": df.dtypes.astype(str),
+            "Uniques": df.nunique()
+        })
+        st.dataframe(uniques, use_container_width=True, height=220)
+
 # ── Suggested questions ────────────────────────────────────────────────────────
 st.markdown("### 💡 Quick Questions")
 suggestions = [
     "📈 Show monthly revenue trend",
     "🏆 Which product category makes most revenue?",
+    "🔮 Show 3D Sales Scatter",
     "🌍 Top 5 countries by sales",
     "👥 What's the average order value by customer segment?",
-    "📦 Show orders by payment method",
     "🔄 What is the refund rate by category?",
 ]
 cols = st.columns(3)

@@ -224,16 +224,32 @@ window.addEventListener('scroll', () => {
   });
 }, { passive: true });
 
-/* ── Card tilt effect (subtle) ───────────────── */
+/* ── Card tilt & glow effect (high-fidelity) ── */
 projectCards.forEach(card => {
+  // Add a dynamic glow indicator if missing
+  let glow = card.querySelector('.card-glow');
+  if (!glow) {
+    glow = document.createElement('div');
+    const cat = card.getAttribute('data-category');
+    glow.className = `card-glow ${cat}-glow`;
+    card.appendChild(glow);
+  }
+
   card.addEventListener('mousemove', (e) => {
     const rect  = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
     const cx    = rect.left + rect.width / 2;
     const cy    = rect.top  + rect.height / 2;
     const dx    = (e.clientX - cx) / (rect.width / 2);
     const dy    = (e.clientY - cy) / (rect.height / 2);
-    card.style.transform = `translateY(-6px) rotateX(${-dy * 4}deg) rotateY(${dx * 4}deg)`;
+
+    card.style.transform = `translateY(-6px) rotateX(${-dy * 6}deg) rotateY(${dx * 6}deg)`;
+    glow.style.left = `${x - 80}px`;
+    glow.style.top  = `${y - 80}px`;
   });
+
   card.addEventListener('mouseleave', () => {
     card.style.transform = '';
   });

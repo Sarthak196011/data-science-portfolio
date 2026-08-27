@@ -225,378 +225,180 @@
       <!-- Project Cards Grid -->
       <div class="projects-grid" id="projectsGrid">
 
-        <!-- P1 -->
-        <article class="project-card glass-card reveal" data-category="ml" id="project1">
-          <div class="card-glow ml-glow"></div>
-          <div class="card-header">
-            <div class="card-icon ml-icon">🔮</div>
-            <div class="card-badges">
-              <span class="badge badge-ml">Machine Learning</span>
-              <span class="badge badge-featured">⭐ Featured</span>
+        <!-- P1: AI Analyst Agent -->
+        <article class="project-card glass-card reveal" data-category="automation" id="project1">
+          <div class="card-image-wrapper">
+            <div class="card-image" style="background-image: url('images/agent_3d_brain.jpg')"></div>
+          </div>
+          <div class="card-content-inner">
+            <div class="card-header">
+              <div class="card-icon automation-icon">🤖</div>
+              <div class="card-badges">
+                <span class="badge badge-automation">AI Automation</span>
+                <span class="badge badge-featured">⭐ Featured</span>
+              </div>
             </div>
-          </div>
-          <h3 class="card-title">Customer Churn Prediction Engine</h3>
-          <p class="card-desc">
-            End-to-end ML pipeline predicting customer churn with 94% accuracy using ensemble methods (XGBoost + LightGBM). Includes automated retraining via Airflow, SHAP explainability, and a live Plotly Dash dashboard for business stakeholders.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">XGBoost</span>
-            <span class="tech-tag">SHAP</span>
-            <span class="tech-tag">Airflow</span>
-            <span class="tech-tag">Plotly Dash</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">94%</span><span class="metric-key">Accuracy</span></div>
-            <div class="metric"><span class="metric-val">40%</span><span class="metric-key">Churn ↓</span></div>
-            <div class="metric"><span class="metric-val">1M+</span><span class="metric-key">Records</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p1-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p1-code">GitHub ↗</a>
+            <h3 class="card-title">DataGPT — AI Data Analyst Agent</h3>
+            <p class="card-desc">
+              An agentic conversational interface built with Streamlit. Uses an intent-routing query system to analyze e-commerce orders, generate dynamic Plotly visualizations, and write data-driven executive narratives. Runs in fully mockable/live modes.
+            </p>
+            <div class="card-tech">
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">Streamlit</span>
+              <span class="tech-tag">Plotly</span>
+              <span class="tech-tag">Pandas</span>
+              <span class="tech-tag">OpenAI API</span>
+            </div>
+            <div class="card-metrics">
+              <div class="metric"><span class="metric-val">100%</span><span class="metric-key">Automated</span></div>
+              <div class="metric"><span class="metric-val">Instant</span><span class="metric-key">Charts</span></div>
+              <div class="metric"><span class="metric-val">Demo Mode</span><span class="metric-key">Supported</span></div>
+            </div>
+            <div class="card-footer">
+              <a href="https://share.streamlit.io/Sarthak196011/data-science-portfolio/main/01-ai-analyst-agent/app.py" target="_blank" class="card-link" id="p1-demo">Live Demo →</a>
+              <a href="https://github.com/Sarthak196011/data-science-portfolio/tree/main/01-ai-analyst-agent" target="_blank" class="card-link card-link-ghost" id="p1-code">GitHub ↗</a>
+            </div>
           </div>
         </article>
 
-        <!-- P2 -->
+        <!-- P2: RAG Chatbot -->
         <article class="project-card glass-card reveal" data-category="nlp" id="project2">
-          <div class="card-glow nlp-glow"></div>
-          <div class="card-header">
-            <div class="card-icon nlp-icon">💬</div>
-            <div class="card-badges">
-              <span class="badge badge-nlp">NLP / LLM</span>
+          <div class="card-image-wrapper">
+            <div class="card-image" style="background-image: url('images/rag_3d_library.jpg')"></div>
+          </div>
+          <div class="card-content-inner">
+            <div class="card-header">
+              <div class="card-icon nlp-icon">💬</div>
+              <div class="card-badges">
+                <span class="badge badge-nlp">NLP / LLM</span>
+              </div>
             </div>
-          </div>
-          <h3 class="card-title">Intelligent Document Q&amp;A System</h3>
-          <p class="card-desc">
-            RAG-based (Retrieval-Augmented Generation) document intelligence platform. Upload any PDF/Word doc and query it in natural language. Powered by LangChain + GPT-4 + FAISS vector store with citation-aware responses.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">LangChain</span>
-            <span class="tech-tag">GPT-4</span>
-            <span class="tech-tag">FAISS</span>
-            <span class="tech-tag">FastAPI</span>
-            <span class="tech-tag">React</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">98%</span><span class="metric-key">Relevance</span></div>
-            <div class="metric"><span class="metric-val">&lt;2s</span><span class="metric-key">Response</span></div>
-            <div class="metric"><span class="metric-val">500+</span><span class="metric-key">Docs Tested</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p2-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p2-code">GitHub ↗</a>
+            <h3 class="card-title">DocMind — RAG Chatbot Platform</h3>
+            <p class="card-desc">
+              Retrieval-Augmented Generation document search system. Extracts, chunks, and indexes PDFs, DOCX, and text files using SentenceTransformers and runs cosine-similarity searches to return contextual answers complete with source citation badges.
+            </p>
+            <div class="card-tech">
+              <span class="tech-tag">SentenceTransformers</span>
+              <span class="tech-tag">FAISS</span>
+              <span class="tech-tag">PyPDF</span>
+              <span class="tech-tag">Streamlit</span>
+              <span class="tech-tag">OpenAI API</span>
+            </div>
+            <div class="card-metrics">
+              <div class="metric"><span class="metric-val">Local</span><span class="metric-key">Embeddings</span></div>
+              <div class="metric"><span class="metric-val">98%</span><span class="metric-key">Relevance</span></div>
+              <div class="metric"><span class="metric-val">&lt;2s</span><span class="metric-key">Query Latency</span></div>
+            </div>
+            <div class="card-footer">
+              <a href="https://share.streamlit.io/Sarthak196011/data-science-portfolio/main/02-rag-chatbot/app.py" target="_blank" class="card-link" id="p2-demo">Live Demo →</a>
+              <a href="https://github.com/Sarthak196011/data-science-portfolio/tree/main/02-rag-chatbot" target="_blank" class="card-link card-link-ghost" id="p2-code">GitHub ↗</a>
+            </div>
           </div>
         </article>
 
-        <!-- P3 -->
-        <article class="project-card glass-card reveal" data-category="analytics" id="project3">
-          <div class="card-glow analytics-glow"></div>
-          <div class="card-header">
-            <div class="card-icon analytics-icon">📊</div>
-            <div class="card-badges">
-              <span class="badge badge-analytics">Data Analytics</span>
+        <!-- P3: Customer Churn Predictor -->
+        <article class="project-card glass-card reveal" data-category="ml" id="project3">
+          <div class="card-image-wrapper">
+            <div class="card-image" style="background-image: url('images/churn_3d_bridge.jpg')"></div>
+          </div>
+          <div class="card-content-inner">
+            <div class="card-header">
+              <div class="card-icon ml-icon">🔮</div>
+              <div class="card-badges">
+                <span class="badge badge-ml">Machine Learning</span>
+                <span class="badge badge-featured">⭐ Featured</span>
+              </div>
             </div>
-          </div>
-          <h3 class="card-title">Real-Time Sales Intelligence Dashboard</h3>
-          <p class="card-desc">
-            Enterprise-grade real-time analytics dashboard ingesting 50K+ transactions/day via Kafka. Powered by dbt transformations on BigQuery and visualized with Tableau — surfacing revenue, funnel, and cohort KPIs with drill-down capabilities.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">Kafka</span>
-            <span class="tech-tag">BigQuery</span>
-            <span class="tech-tag">dbt</span>
-            <span class="tech-tag">Tableau</span>
-            <span class="tech-tag">SQL</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">50K+</span><span class="metric-key">Events/Day</span></div>
-            <div class="metric"><span class="metric-val">Real</span><span class="metric-key">-Time</span></div>
-            <div class="metric"><span class="metric-val">15</span><span class="metric-key">KPI Views</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p3-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p3-code">GitHub ↗</a>
+            <h3 class="card-title">Customer Churn Prediction Engine</h3>
+            <p class="card-desc">
+              XGBoost classification model predicting customer retention. Built with scikit-learn preprocessing and feature extraction. Features an interactive dashboard, single-customer profile intake, batch CSV scoring, and local serialization.
+            </p>
+            <div class="card-tech">
+              <span class="tech-tag">XGBoost</span>
+              <span class="tech-tag">Scikit-learn</span>
+              <span class="tech-tag">Streamlit</span>
+              <span class="tech-tag">Plotly</span>
+              <span class="tech-tag">Pandas</span>
+            </div>
+            <div class="card-metrics">
+              <div class="metric"><span class="metric-val">94%</span><span class="metric-key">AUC Score</span></div>
+              <div class="metric"><span class="metric-val">100%</span><span class="metric-key">Interpretability</span></div>
+              <div class="metric"><span class="metric-val">&lt;50ms</span><span class="metric-key">Inference</span></div>
+            </div>
+            <div class="card-footer">
+              <a href="https://share.streamlit.io/Sarthak196011/data-science-portfolio/main/03-churn-predictor/app.py" target="_blank" class="card-link" id="p3-demo">Live Demo →</a>
+              <a href="https://github.com/Sarthak196011/data-science-portfolio/tree/main/03-churn-predictor" target="_blank" class="card-link card-link-ghost" id="p3-code">GitHub ↗</a>
+            </div>
           </div>
         </article>
 
-        <!-- P4 -->
-        <article class="project-card glass-card reveal" data-category="automation" id="project4">
-          <div class="card-glow automation-glow"></div>
-          <div class="card-header">
-            <div class="card-icon automation-icon">⚙️</div>
-            <div class="card-badges">
-              <span class="badge badge-automation">AI Automation</span>
-              <span class="badge badge-featured">⭐ Featured</span>
+        <!-- P4: ETL + BI Pipeline -->
+        <article class="project-card glass-card reveal" data-category="analytics" id="project4">
+          <div class="card-image-wrapper">
+            <div class="card-image" style="background-image: url('images/etl_3d_pipeline.jpg')"></div>
+          </div>
+          <div class="card-content-inner">
+            <div class="card-header">
+              <div class="card-icon analytics-icon">🏗️</div>
+              <div class="card-badges">
+                <span class="badge badge-analytics">Data Engineering</span>
+              </div>
             </div>
-          </div>
-          <h3 class="card-title">AI-Powered ETL Automation Platform</h3>
-          <p class="card-desc">
-            Self-healing ETL platform that uses LLM agents to automatically detect schema drift, write corrective transformation code, and restart failed pipeline stages — reducing manual intervention by 85% across 20+ data sources.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">LangChain Agents</span>
-            <span class="tech-tag">Airflow</span>
-            <span class="tech-tag">Spark</span>
-            <span class="tech-tag">AWS Lambda</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">85%</span><span class="metric-key">Less Ops</span></div>
-            <div class="metric"><span class="metric-val">20+</span><span class="metric-key">Sources</span></div>
-            <div class="metric"><span class="metric-val">99.9%</span><span class="metric-key">Uptime</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p4-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p4-code">GitHub ↗</a>
+            <h3 class="card-title">DuckDB ETL &amp; BI Pipeline</h3>
+            <p class="card-desc">
+              Data engineering pipeline executing extract, SQL transform (star schema fact/dimension modeling), and loading inside in-memory DuckDB. Served via a high-density, multi-tab business intelligence dashboard with Plotly charts.
+            </p>
+            <div class="card-tech">
+              <span class="tech-tag">DuckDB</span>
+              <span class="tech-tag">SQL</span>
+              <span class="tech-tag">Streamlit</span>
+              <span class="tech-tag">Plotly</span>
+              <span class="tech-tag">Pandas</span>
+            </div>
+            <div class="card-metrics">
+              <div class="metric"><span class="metric-val">5,000</span><span class="metric-key">Daily Events</span></div>
+              <div class="metric"><span class="metric-val">Star</span><span class="metric-key">Schema DW</span></div>
+              <div class="metric"><span class="metric-val">DuckDB</span><span class="metric-key">SQL Engine</span></div>
+            </div>
+            <div class="card-footer">
+              <a href="https://share.streamlit.io/Sarthak196011/data-science-portfolio/main/04-etl-bi-pipeline/dashboard/app.py" target="_blank" class="card-link" id="p4-demo">Live Demo →</a>
+              <a href="https://github.com/Sarthak196011/data-science-portfolio/tree/main/04-etl-bi-pipeline" target="_blank" class="card-link card-link-ghost" id="p4-code">GitHub ↗</a>
+            </div>
           </div>
         </article>
 
-        <!-- P5 -->
+        <!-- P5: MLOps Pipeline -->
         <article class="project-card glass-card reveal" data-category="ml" id="project5">
-          <div class="card-glow ml-glow"></div>
-          <div class="card-header">
-            <div class="card-icon ml-icon">📈</div>
-            <div class="card-badges">
-              <span class="badge badge-ml">Machine Learning</span>
+          <div class="card-image-wrapper">
+            <div class="card-image" style="background-image: url('images/hero_3d_hologram.jpg')"></div>
+          </div>
+          <div class="card-content-inner">
+            <div class="card-header">
+              <div class="card-icon ml-icon">⚙️</div>
+              <div class="card-badges">
+                <span class="badge badge-ml">MLOps / Dev</span>
+              </div>
             </div>
-          </div>
-          <h3 class="card-title">Stock Price Forecasting with LSTM</h3>
-          <p class="card-desc">
-            Multivariate time-series forecasting model combining LSTM networks with technical indicators (RSI, MACD, Bollinger Bands) and sentiment from financial news. Backtested on 5 years of data with 78% directional accuracy.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">PyTorch</span>
-            <span class="tech-tag">LSTM</span>
-            <span class="tech-tag">FinBERT</span>
-            <span class="tech-tag">yfinance</span>
-            <span class="tech-tag">Streamlit</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">78%</span><span class="metric-key">Direction</span></div>
-            <div class="metric"><span class="metric-val">5yr</span><span class="metric-key">Backtested</span></div>
-            <div class="metric"><span class="metric-val">10</span><span class="metric-key">Indicators</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p5-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p5-code">GitHub ↗</a>
-          </div>
-        </article>
-
-        <!-- P6 -->
-        <article class="project-card glass-card reveal" data-category="nlp" id="project6">
-          <div class="card-glow nlp-glow"></div>
-          <div class="card-header">
-            <div class="card-icon nlp-icon">😊</div>
-            <div class="card-badges">
-              <span class="badge badge-nlp">NLP / LLM</span>
+            <h3 class="card-title">ChurnShield MLOps API Platform</h3>
+            <p class="card-desc">
+              Production ML serving backend container. Features FastAPI REST endpoints (predict, batch inference, health, and prometheus metrics), automated pytest validation suites, MLflow experiment parameter tracking, and Docker serving.
+            </p>
+            <div class="card-tech">
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">MLflow</span>
+              <span class="tech-tag">Docker</span>
+              <span class="tech-tag">Pytest</span>
+              <span class="tech-tag">GitHub Actions</span>
             </div>
-          </div>
-          <h3 class="card-title">Social Media Sentiment Analyzer</h3>
-          <p class="card-desc">
-            Real-time sentiment analysis pipeline ingesting Twitter/Reddit streams via APIs. Fine-tuned RoBERTa model classifies brand sentiment, tracks topic trends, and alerts on negative spikes — helping marketing teams act within minutes.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">RoBERTa</span>
-            <span class="tech-tag">HuggingFace</span>
-            <span class="tech-tag">Kafka</span>
-            <span class="tech-tag">Redis</span>
-            <span class="tech-tag">Grafana</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">92%</span><span class="metric-key">F1 Score</span></div>
-            <div class="metric"><span class="metric-val">10K+</span><span class="metric-key">Tweets/hr</span></div>
-            <div class="metric"><span class="metric-val">Live</span><span class="metric-key">Alerts</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p6-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p6-code">GitHub ↗</a>
-          </div>
-        </article>
-
-        <!-- P7 -->
-        <article class="project-card glass-card reveal" data-category="analytics" id="project7">
-          <div class="card-glow analytics-glow"></div>
-          <div class="card-header">
-            <div class="card-icon analytics-icon">🏥</div>
-            <div class="card-badges">
-              <span class="badge badge-analytics">Data Analytics</span>
+            <div class="card-metrics">
+              <div class="metric"><span class="metric-val">Docker</span><span class="metric-key">Deployment</span></div>
+              <div class="metric"><span class="metric-val">8/8</span><span class="metric-key">Tests Passed</span></div>
+              <div class="metric"><span class="metric-val">CI/CD</span><span class="metric-key">Automated</span></div>
             </div>
-          </div>
-          <h3 class="card-title">Healthcare Patient Risk Stratification</h3>
-          <p class="card-desc">
-            Predictive analytics system for hospital readmission risk using EHR data. Applies gradient boosting and survival analysis to flag high-risk patients, integrated with Power BI for clinical team visibility and HIPAA-compliant data handling.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">Scikit-learn</span>
-            <span class="tech-tag">Lifelines</span>
-            <span class="tech-tag">Power BI</span>
-            <span class="tech-tag">PostgreSQL</span>
-            <span class="tech-tag">Azure</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">87%</span><span class="metric-key">AUC-ROC</span></div>
-            <div class="metric"><span class="metric-val">30%</span><span class="metric-key">Readmit ↓</span></div>
-            <div class="metric"><span class="metric-val">HIPAA</span><span class="metric-key">Compliant</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p7-demo">Case Study →</a>
-            <a href="#" class="card-link card-link-ghost" id="p7-code">GitHub ↗</a>
-          </div>
-        </article>
-
-        <!-- P8 -->
-        <article class="project-card glass-card reveal" data-category="automation" id="project8">
-          <div class="card-glow automation-glow"></div>
-          <div class="card-header">
-            <div class="card-icon automation-icon">📧</div>
-            <div class="card-badges">
-              <span class="badge badge-automation">AI Automation</span>
+            <div class="card-footer">
+              <a href="https://churnshield-mlops-api.onrender.com/docs" target="_blank" class="card-link" id="p5-demo">API Docs →</a>
+              <a href="https://github.com/Sarthak196011/data-science-portfolio/tree/main/05-mlops-pipeline" target="_blank" class="card-link card-link-ghost" id="p5-code">GitHub ↗</a>
             </div>
-          </div>
-          <h3 class="card-title">Automated Report Generation Agent</h3>
-          <p class="card-desc">
-            LLM-driven agentic system that autonomously queries databases, runs analyses, creates charts, and emails formatted executive reports — replacing 20+ hours/week of manual analyst work across finance and ops teams.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">OpenAI API</span>
-            <span class="tech-tag">LangGraph</span>
-            <span class="tech-tag">Jinja2</span>
-            <span class="tech-tag">Matplotlib</span>
-            <span class="tech-tag">SendGrid</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">20hr</span><span class="metric-key">Saved/wk</span></div>
-            <div class="metric"><span class="metric-val">100%</span><span class="metric-key">Automated</span></div>
-            <div class="metric"><span class="metric-val">Daily</span><span class="metric-key">Reports</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p8-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p8-code">GitHub ↗</a>
-          </div>
-        </article>
-
-        <!-- P9 -->
-        <article class="project-card glass-card reveal" data-category="ml" id="project9">
-          <div class="card-glow ml-glow"></div>
-          <div class="card-header">
-            <div class="card-icon ml-icon">🛒</div>
-            <div class="card-badges">
-              <span class="badge badge-ml">Machine Learning</span>
-            </div>
-          </div>
-          <h3 class="card-title">E-Commerce Recommendation Engine</h3>
-          <p class="card-desc">
-            Hybrid recommendation system blending collaborative filtering (ALS matrix factorization) with content-based NLP embeddings. Deployed on AWS SageMaker with A/B testing infrastructure, driving 22% uplift in average order value.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">PySpark ALS</span>
-            <span class="tech-tag">SentenceTransformers</span>
-            <span class="tech-tag">SageMaker</span>
-            <span class="tech-tag">FastAPI</span>
-            <span class="tech-tag">DynamoDB</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">22%</span><span class="metric-key">AOV ↑</span></div>
-            <div class="metric"><span class="metric-val">&lt;50ms</span><span class="metric-key">Latency</span></div>
-            <div class="metric"><span class="metric-val">5M+</span><span class="metric-key">Users</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p9-demo">Case Study →</a>
-            <a href="#" class="card-link card-link-ghost" id="p9-code">GitHub ↗</a>
-          </div>
-        </article>
-
-        <!-- P10 -->
-        <article class="project-card glass-card reveal" data-category="nlp" id="project10">
-          <div class="card-glow nlp-glow"></div>
-          <div class="card-header">
-            <div class="card-icon nlp-icon">📄</div>
-            <div class="card-badges">
-              <span class="badge badge-nlp">NLP / LLM</span>
-            </div>
-          </div>
-          <h3 class="card-title">Contract Intelligence Extraction System</h3>
-          <p class="card-desc">
-            NLP pipeline for automated legal contract analysis — extracting key clauses, parties, dates, and risk flags using spaCy NER + GPT-4 structured output. Processes 200+ contracts/day with 96% extraction accuracy for a legal-tech startup.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">spaCy</span>
-            <span class="tech-tag">GPT-4 API</span>
-            <span class="tech-tag">Pydantic</span>
-            <span class="tech-tag">Elasticsearch</span>
-            <span class="tech-tag">Docker</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">96%</span><span class="metric-key">Accuracy</span></div>
-            <div class="metric"><span class="metric-val">200+</span><span class="metric-key">Docs/Day</span></div>
-            <div class="metric"><span class="metric-val">70%</span><span class="metric-key">Time ↓</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p10-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p10-code">GitHub ↗</a>
-          </div>
-        </article>
-
-        <!-- P11 -->
-        <article class="project-card glass-card reveal" data-category="analytics" id="project11">
-          <div class="card-glow analytics-glow"></div>
-          <div class="card-header">
-            <div class="card-icon analytics-icon">⚡</div>
-            <div class="card-badges">
-              <span class="badge badge-analytics">Data Analytics</span>
-            </div>
-          </div>
-          <h3 class="card-title">IoT Predictive Maintenance Analytics</h3>
-          <p class="card-desc">
-            Streaming analytics system for manufacturing IoT sensors — detecting anomalies in vibration, temperature, and pressure data using Isolation Forest + Autoencoders. Predicts equipment failures 48 hours in advance, saving $2M in downtime costs.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">Kafka Streams</span>
-            <span class="tech-tag">Flink</span>
-            <span class="tech-tag">TensorFlow</span>
-            <span class="tech-tag">InfluxDB</span>
-            <span class="tech-tag">Grafana</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">48hr</span><span class="metric-key">Early Warn</span></div>
-            <div class="metric"><span class="metric-val">$2M</span><span class="metric-key">Saved</span></div>
-            <div class="metric"><span class="metric-val">99%</span><span class="metric-key">Precision</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p11-demo">Case Study →</a>
-            <a href="#" class="card-link card-link-ghost" id="p11-code">GitHub ↗</a>
-          </div>
-        </article>
-
-        <!-- P12 -->
-        <article class="project-card glass-card reveal" data-category="automation" id="project12">
-          <div class="card-glow automation-glow"></div>
-          <div class="card-header">
-            <div class="card-icon automation-icon">🕷️</div>
-            <div class="card-badges">
-              <span class="badge badge-automation">AI Automation</span>
-              <span class="badge badge-featured">⭐ Featured</span>
-            </div>
-          </div>
-          <h3 class="card-title">Agentic Web Research &amp; Synthesis Bot</h3>
-          <p class="card-desc">
-            Multi-agent AI system that autonomously browses the web, scrapes structured data, deduplicates sources, synthesizes findings, and delivers formatted research briefs — completing 8-hour research tasks in under 15 minutes.
-          </p>
-          <div class="card-tech">
-            <span class="tech-tag">LangGraph</span>
-            <span class="tech-tag">GPT-4o</span>
-            <span class="tech-tag">Playwright</span>
-            <span class="tech-tag">Qdrant</span>
-            <span class="tech-tag">Celery</span>
-          </div>
-          <div class="card-metrics">
-            <div class="metric"><span class="metric-val">15min</span><span class="metric-key">vs 8hrs</span></div>
-            <div class="metric"><span class="metric-val">Multi</span><span class="metric-key">-Agent</span></div>
-            <div class="metric"><span class="metric-val">Auto</span><span class="metric-key">mated</span></div>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="card-link" id="p12-demo">Live Demo →</a>
-            <a href="#" class="card-link card-link-ghost" id="p12-code">GitHub ↗</a>
           </div>
         </article>
 

@@ -29,6 +29,7 @@ html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
+    st.image("images/rag_3d_library.jpg", use_container_width=True)
     st.markdown("## 💬 DocMind RAG")
     st.markdown("*Chat with your documents using AI*")
     st.divider()
@@ -46,7 +47,33 @@ with st.sidebar:
     st.caption("🔒 Keys are never stored or logged.")
 
     st.divider()
-    if st.button("🗑️ Clear Chat History"):
+    st.markdown("**🗣️ Language Settings**")
+    chat_lang = st.selectbox("Select Chat Language", ["English", "Spanish", "French", "Hindi", "German"])
+
+    st.divider()
+    st.markdown("**💾 Session Manager**")
+    if "sessions" not in st.session_state:
+        st.session_state.sessions = {}
+    
+    if st.button("💾 Save Current Chat"):
+        if st.session_state.messages:
+            s_name = f"Session {len(st.session_state.sessions) + 1} ({len(st.session_state.messages)} turns)"
+            st.session_state.sessions[s_name] = st.session_state.messages.copy()
+            st.session_state.messages = []
+            st.success(f"Saved: {s_name}")
+            st.rerun()
+        else:
+            st.warning("Chat is empty, nothing to save.")
+
+    if st.session_state.sessions:
+        load_s = st.selectbox("📂 Load Saved Chat", ["Select session..."] + list(st.session_state.sessions.keys()))
+        if load_s != "Select session...":
+            st.session_state.messages = st.session_state.sessions[load_s].copy()
+            st.success(f"Loaded: {load_s}")
+            st.rerun()
+
+    st.divider()
+    if st.button("🗑️ Clear Active Chat"):
         st.session_state.messages = []
         st.session_state.vectorstore = None
         st.rerun()
@@ -55,7 +82,7 @@ with st.sidebar:
     top_k    = st.slider("Sources to retrieve (k)", 2, 8, 4)
     use_demo = not bool(openai_key)
     if use_demo:
-        st.info("🎭 Demo mode — realistic mock responses without an API key.")
+        st.info("🎭 Demo mode active.")
 
 # ── Session state ──────────────────────────────────────────────────────────────
 if "messages"    not in st.session_state: st.session_state.messages    = []
@@ -127,6 +154,53 @@ if not st.session_state.messages:
             st.session_state.pending_q = q
             st.rerun()
 
+# ── Translation Helper ─────────────────────────────────────────────────────────
+def translate_text(text: str, target_lang: str, api_key: str = None) -> str:
+    if target_lang == "English":
+        return text
+    if not api_key:
+        mocks = {
+            "Spanish": f"[Spanish Translation] {text}",
+            "French": f"[French Translation] {text}",
+            "Hindi": f"[Hindi Translation] {text}",
+            "German": f"[German Translation] {text}",
+        }
+        return mocks.get(target_lang, f"[{target_lang}] {text}")
+    try:
+        import openai
+        client = openai.OpenAI(api_key=api_key)
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": f"Translate the following text to {target_lang}. Return ONLY the direct translation, no extra notes."},
+                {"role": "user", "content": text}
+            ],
+            max_tokens=400, temperature=0.2
+        )
+        return resp.choices[0].message.content
+    except Exception:
+        return f"[{target_lang}] {text}"
+
+def translate_to_english(text: str, source_lang: str, api_key: str = None) -> str:
+    if source_lang == "English":
+        return text
+    if not api_key:
+        return text # fallback to english directly in mock
+    try:
+        import openai
+        client = openai.OpenAI(api_key=api_key)
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Translate the following text to English. Return ONLY the direct translation, no extra notes."},
+                {"role": "user", "content": text}
+            ],
+            max_tokens=400, temperature=0.2
+        )
+        return resp.choices[0].message.content
+    except Exception:
+        return text
+
 # ── Input ─────────────────────────────────────────────────────────────────────
 question = st.chat_input("Ask anything about your documents…")
 if hasattr(st.session_state, 'pending_q'):
@@ -141,13 +215,20 @@ if question:
         sources = []
     else:
         with st.spinner("🔍 Searching documents…"):
+            # Translate query to English if needed
+            eng_question = translate_to_english(question, chat_lang, openai_key if openai_key else None)
+            
             answer, sources = answer_question(
-                question,
+                eng_question,
                 st.session_state.vectorstore,
                 api_key=openai_key if openai_key else None,
                 top_k=top_k,
                 demo_mode=use_demo,
             )
+            
+            # Translate answer back to user's selected language
+            if chat_lang != "English":
+                answer = translate_text(answer, chat_lang, openai_key if openai_key else None)
 
     st.session_state.messages.append({
         "role": "assistant",

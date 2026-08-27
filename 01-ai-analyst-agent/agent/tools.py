@@ -89,6 +89,27 @@ def run_query(df: pd.DataFrame, question: str, demo_mode: bool = True, api_key: 
             f"Overall return rate is {df.is_returned.mean()*100:.1f}%. "
             f"**{data.iloc[-1]['product_category']}** has the highest return rate at {data.iloc[-1]['return_rate']*100:.1f}%.")
 
+    elif any(w in q for w in ['3d', 'scatter', 'multivariate', 'cluster', '3d chart']):
+        fig = px.scatter_3d(
+            df, x='units_sold', y='revenue', z='rating',
+            color='product_category',
+            title='3D Product Performance (Units Sold vs Revenue vs Rating)',
+            labels={'units_sold': 'Units Sold', 'revenue': 'Revenue ($)', 'rating': 'Customer Rating'},
+            color_discrete_sequence=['#6366f1','#10b981','#3b82f6','#ec4899','#f59e0b','#ef4444']
+        )
+        fig.update_layout(
+            scene = dict(
+                xaxis = dict(backgroundcolor="rgba(0,0,0,0)", gridcolor="rgba(0,0,0,0.05)", showbackground=True),
+                yaxis = dict(backgroundcolor="rgba(0,0,0,0)", gridcolor="rgba(0,0,0,0.05)", showbackground=True),
+                zaxis = dict(backgroundcolor="rgba(0,0,0,0)", gridcolor="rgba(0,0,0,0.05)", showbackground=True),
+            ),
+            margin=dict(l=0, r=0, b=0, t=40),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#2c2825')
+        )
+        insight = "Here is an interactive **3D Scatter Plot** showing units sold (X), revenue (Y), and customer rating (Z) colored by product category. You can drag and scroll to rotate the 3D model."
+
     else:
         # Fallback: show revenue overview
         fig, data = _monthly_revenue(df)

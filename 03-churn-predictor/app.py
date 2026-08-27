@@ -52,11 +52,17 @@ html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color
 
 # ── Sidebar Navigation ────────────────────────────────────────────────────────
 with st.sidebar:
+    st.image("images/churn_3d_bridge.jpg", use_container_width=True)
     st.markdown("## 🔮 ChurnShield AI")
     st.markdown("*Customer Churn Prediction Platform*")
     st.divider()
     page = st.radio("Navigate", ["🏠 Home","🎯 Predict Single","📦 Batch Predict","📊 Analytics Dashboard","ℹ️ About"])
     st.divider()
+    
+    openai_key = st.text_input("OpenAI API Key (optional)", type="password", placeholder="sk-...")
+    st.session_state.openai_key = openai_key
+    st.divider()
+    
     st.markdown("**Model Info**")
     st.markdown("- Algorithm: XGBoost")
     st.markdown("- Features: 15")
