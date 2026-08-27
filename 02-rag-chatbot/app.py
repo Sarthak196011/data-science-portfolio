@@ -29,7 +29,7 @@ html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("images/rag_3d_library.jpg", use_container_width=True)
+    st.image(os.path.join(os.path.dirname(__file__), "images", "rag_3d_library.jpg"), use_container_width=True)
     st.markdown("## 💬 DocMind RAG")
     st.markdown("*Chat with your documents using AI*")
     st.divider()

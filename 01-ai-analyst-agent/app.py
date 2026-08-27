@@ -29,7 +29,7 @@ html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("images/agent_3d_brain.jpg", use_container_width=True)
+    st.image(os.path.join(os.path.dirname(__file__), "images", "agent_3d_brain.jpg"), use_container_width=True)
     st.markdown("## 🤖 DataGPT")
     st.markdown("*AI-Powered Data Analyst Agent*")
     st.divider()

@@ -3,6 +3,7 @@ Customer Churn Predictor — Main Streamlit App
 Run: streamlit run app.py
 """
 import streamlit as st
+import os
 
 st.set_page_config(
     page_title="ChurnShield AI — Customer Churn Predictor",
@@ -52,7 +53,7 @@ html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; color
 
 # ── Sidebar Navigation ────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("images/churn_3d_bridge.jpg", use_container_width=True)
+    st.image(os.path.join(os.path.dirname(__file__), "images", "churn_3d_bridge.jpg"), use_container_width=True)
     st.markdown("## 🔮 ChurnShield AI")
     st.markdown("*Customer Churn Prediction Platform*")
     st.divider()
