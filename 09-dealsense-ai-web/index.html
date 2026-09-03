@@ -1,0 +1,2249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEALSENSE AI // Autonomous Price Intelligence</title>
+
+    <!-- Fonts & Motion Libraries -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Italiana&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #090c15;
+            --surface: rgba(15, 23, 42, 0.75);
+            --surface-strong: rgba(22, 32, 56, 0.88);
+            --surface-border: rgba(255, 255, 255, 0.1);
+            --text: #f1f5f9;
+            --dim: #94a3b8;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.35);
+            --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.25);
+            --purple: #a855f7;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --card-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 3D Dark Studio Atmospheric Glows */
+        .bg-gradient-mesh {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 85% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 80%, rgba(30, 41, 59, 0.3) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #ambient-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* Dark Glassmorphic Navbar */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 78px;
+            padding: 0 3.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(9, 12, 21, 0.82);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+
+        .brand-cube {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            border-radius: 4px;
+            box-shadow: 0 0 14px var(--accent-glow);
+            transform: rotate(45deg);
+            animation: pulse 2.2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: rotate(45deg) scale(1);
+                filter: drop-shadow(0 0 6px var(--accent-glow));
+            }
+            50% {
+                transform: rotate(45deg) scale(1.25);
+                filter: drop-shadow(0 0 16px var(--accent-glow));
+            }
+        }
+
+        .engine-status {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        .currency-selector-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1.5px solid rgba(56, 189, 248, 0.35);
+            border-radius: 99px;
+            padding: 5px 14px 5px 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.25s var(--ease);
+        }
+
+        .currency-selector-wrap:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px var(--accent-glow);
+        }
+
+        .currency-select {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        .currency-select option {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            color: var(--dim);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        /* ── Hero Resadex Layout ───────────────────────────────────────────── */
+        main {
+            position: relative;
+            z-index: 10;
+            padding: 6.5rem 3.5rem 5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .hero-resadex-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-top: 3.5rem;
+            margin-bottom: 2rem;
+            perspective: 1200px;
+        }
+
+        .meta-lead {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1.4rem;
+            display: inline-block;
+            text-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.8rem, 5.5vw, 5.6rem);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            max-width: 1080px;
+        }
+
+        .hero-title em {
+            font-family: 'Italiana', serif;
+            font-style: italic;
+            font-weight: 400;
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.35));
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: var(--dim);
+            max-width: 680px;
+            margin-bottom: 2.8rem;
+        }
+
+        /* Search Bar Transformed into High-Precision Dark Pod */
+        .search-bar-wrap {
+            background: rgba(22, 32, 56, 0.85);
+            border: 1.5px solid rgba(56, 189, 248, 0.35);
+            border-radius: 99px;
+            padding: 0.65rem 0.8rem 0.65rem 1.6rem;
+            margin-bottom: 3.5rem;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            max-width: 720px;
+            transform-style: preserve-3d;
+            transition: all 0.3s var(--ease);
+            z-index: 30;
+        }
+
+        .search-bar-wrap:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 30px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .search-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        .search-main-input {
+            flex: 1;
+            padding: 8px 4px;
+            background: transparent;
+            border: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #ffffff;
+            outline: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .search-main-input::placeholder {
+            color: #64748b;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 12px 26px;
+            border: none;
+            border-radius: 99px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+            transition: all 0.25s var(--ease);
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.6);
+        }
+
+        /* 3D Resadex Central Stage Container */
+        .resadex-viewport {
+            position: relative;
+            width: 100%;
+            height: 560px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        /* Floating Orbiting Satellite HUD Cards */
+        .orbit-card {
+            position: absolute;
+            background: var(--surface-strong);
+            border: 1px solid var(--surface-border);
+            border-radius: 18px;
+            padding: 1.1rem 1.5rem;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: var(--card-shadow);
+            z-index: 15;
+            pointer-events: none;
+            transition: transform 0.4s var(--ease);
+            text-align: left;
+        }
+
+        .orbit-card-1 {
+            top: 15%;
+            left: 12%;
+            width: 250px;
+        }
+
+        .orbit-card-2 {
+            bottom: 16%;
+            right: 12%;
+            width: 260px;
+        }
+
+        .orbit-card-3 {
+            bottom: 20%;
+            left: 14%;
+            width: 220px;
+        }
+
+        /* Top 5 Places Container */
+        .top5-container {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 3.5rem;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: var(--card-shadow);
+            transform-style: preserve-3d;
+        }
+
+        .top5-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .top5-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        .top5-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.2rem;
+            perspective: 1000px;
+        }
+
+        /* Product Hero */
+        .product-hero {
+            display: flex;
+            gap: 2.2rem;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%);
+            border: 1.5px solid rgba(56, 189, 248, 0.25);
+            border-radius: 20px;
+            padding: 1.8rem 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-img-card {
+            width: 160px;
+            height: 160px;
+            flex-shrink: 0;
+            border-radius: 20px;
+            background: #0f172a;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+            padding: 12px;
+            transition: transform 0.35s var(--ease);
+        }
+
+        .product-img-card:hover {
+            transform: scale(1.04) rotateZ(1deg);
+        }
+
+        .product-img-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.35s ease, transform 0.35s var(--ease);
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-img-card img.loaded {
+            opacity: 1;
+        }
+
+        .product-img-skeleton {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .verified-photo-badge {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            color: #38bdf8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 99px;
+            white-space: nowrap;
+            letter-spacing: 0.05em;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .product-hero-info {
+            flex: 1;
+        }
+
+        .product-hero-cat {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .product-hero-name {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .product-hero-meta {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .hero-price-msrp {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: #64748b;
+            text-decoration: line-through;
+        }
+
+        .hero-price-best {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--green);
+            text-shadow: 0 0 12px var(--green-glow);
+        }
+
+        .hero-savings-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: var(--green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 99px;
+        }
+
+        /* 3D Dark Interactive Cheapest Cards */
+        .cheapest-card {
+            background: rgba(22, 32, 56, 0.75);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 1.4rem 1.2rem;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .cheapest-card.rank-1 {
+            border-color: var(--green);
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.12) 0%, rgba(22, 32, 56, 0.9) 100%);
+            box-shadow: 0 12px 28px rgba(16, 185, 129, 0.2);
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: -10px;
+            right: 12px;
+            background: #0284c7;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 99px;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .rank-1 .rank-badge {
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        .store-name {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .store-rating {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--dim);
+            margin-bottom: 1.1rem;
+        }
+
+        .store-price-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--green);
+            margin-bottom: 2px;
+            text-shadow: 0 0 10px var(--green-glow);
+        }
+
+        .shipping-info {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        .btn-buy {
+            width: 100%;
+            background: #1e293b;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 0;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s var(--ease);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .rank-1 .btn-buy {
+            background: var(--green);
+            border-color: transparent;
+            box-shadow: 0 4px 14px var(--green-glow);
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            opacity: 0.92;
+            border-color: var(--accent);
+        }
+
+        /* Official Site Banner */
+        .official-site-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(56, 189, 248, 0.12) 100%);
+            border: 1.5px solid rgba(168, 85, 247, 0.35);
+            border-radius: 16px;
+            padding: 1.2rem 1.8rem;
+            margin-top: 1.8rem;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .official-site-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .official-site-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .official-site-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #c084fc;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .official-site-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        .official-site-right {
+            display: flex;
+            align-items: center;
+            gap: 1.4rem;
+        }
+
+        .official-price-compare {
+            text-align: right;
+        }
+
+        .official-price-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #c084fc;
+        }
+
+        .official-price-diff {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: #f87171;
+            font-weight: 700;
+        }
+
+        .btn-official {
+            background: linear-gradient(135deg, #9333ea, #0284c7);
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(147, 51, 234, 0.4);
+            transition: all 0.2s var(--ease);
+        }
+
+        .btn-official:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(147, 51, 234, 0.6);
+        }
+
+        /* Deal Intelligence & KPI */
+        .intelligence-section {
+            margin-bottom: 3.5rem;
+        }
+
+        .intelligence-top-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.4rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .deal-verify-card {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.45) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1.5px solid rgba(56, 189, 248, 0.4);
+            border-radius: 20px;
+            padding: 1.6rem 1.8rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .verify-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .verify-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .verify-title {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: #38bdf8;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .verify-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+        }
+
+        .verify-sub strong {
+            color: #38bdf8;
+        }
+
+        .ai-insight-banner {
+            background: var(--surface-strong);
+            border: 1.5px solid rgba(56, 189, 248, 0.35);
+            border-radius: 20px;
+            padding: 1.6rem 1.8rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .ai-insight-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .ai-robot-badge {
+            font-size: 2.2rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .ai-insight-pill {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #34d399;
+            margin-bottom: 6px;
+        }
+
+        .ai-insight-text {
+            font-size: 0.98rem;
+            color: #e2e8f0;
+            line-height: 1.55;
+        }
+
+        .ai-insight-text strong {
+            color: #38bdf8;
+        }
+
+        .kpi-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.4rem;
+        }
+
+        .kpi-card {
+            background: rgba(22, 32, 56, 0.75);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 1.6rem 1.8rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s var(--ease);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        .kpi-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--green);
+            line-height: 1.2;
+            margin-bottom: 4px;
+            text-shadow: 0 0 10px var(--green-glow);
+        }
+
+        .kpi-purple {
+            color: #c084fc;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
+        }
+
+        .kpi-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .kpi-green {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-bottom: 3.5rem;
+        }
+
+        .charts-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.6rem;
+        }
+
+        .charts-section-header h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 1.8rem;
+        }
+
+        .chart-card {
+            background: rgba(22, 32, 56, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s var(--ease);
+        }
+
+        .chart-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .chart-card-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .chart-card-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 1.4rem;
+        }
+
+        .chart-badge-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 99px;
+        }
+
+        .badge-low {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .badge-high {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        .badge-now {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
+        .chart-canvas-wrap {
+            position: relative;
+            height: 230px;
+        }
+
+        .chart-card-full {
+            grid-column: 1 / -1;
+            margin-top: 1.6rem;
+        }
+
+        .matrix-canvas-wrap {
+            position: relative;
+            height: 320px;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1200px) {
+            .resadex-viewport {
+                height: 440px;
+            }
+            .orbit-card-1 {
+                left: 4%;
+            }
+            .orbit-card-2 {
+                right: 4%;
+            }
+            .orbit-card-3 {
+                left: 6%;
+            }
+            .top5-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0 1.5rem;
+            }
+            main {
+                padding: 6rem 1.5rem 3rem;
+            }
+            .resadex-viewport {
+                height: 360px;
+            }
+            .orbit-card {
+                display: none;
+            }
+            .top5-grid, .kpi-cards-grid, .intelligence-top-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Ambient Dark Mesh & Canvas -->
+    <div class="bg-gradient-mesh"></div>
+    <canvas id="ambient-canvas"></canvas>
+
+    <!-- Navigation Bar -->
+    <header>
+        <div class="brand">
+            <div class="brand-cube"></div>
+            <span>DEALSENSE AI // PRICE INTELLIGENCE</span>
+        </div>
+        <div class="engine-status">
+            <div class="pill"><span class="pill-dot"></span>LIVE PIPELINE: ACTIVE</div>
+            <div class="pill">5-STORE COMPARISON ENGINE</div>
+
+            <!-- Currency Selector -->
+            <div class="currency-selector-wrap">
+                <span class="currency-flag" id="currency-flag">🇺🇸</span>
+                <select class="currency-select" id="currency-select">
+                    <option value="USD">USD $</option>
+                    <option value="EUR">EUR €</option>
+                    <option value="GBP">GBP £</option>
+                    <option value="INR">INR ₹</option>
+                    <option value="JPY">JPY ¥</option>
+                    <option value="AUD">AUD A$</option>
+                    <option value="CAD">CAD C$</option>
+                    <option value="CNY">CNY ¥</option>
+                    <option value="CHF">CHF Fr</option>
+                    <option value="SGD">SGD S$</option>
+                    <option value="AED">AED د.إ</option>
+                    <option value="BRL">BRL R$</option>
+                    <option value="MXN">MXN $</option>
+                    <option value="KRW">KRW ₩</option>
+                    <option value="SEK">SEK kr</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Viewport Content -->
+    <main>
+        
+        <!-- ── Resadex Centered Hero Stage ──────────────────────────────── -->
+        <section class="hero-resadex-stage">
+            <span class="meta-lead">Autonomous Price Intelligence & Arbitrage Engine</span>
+            <h1 class="hero-title">
+                Uncover verified market value with <br>
+                <em>3D spatial deal intelligence</em>
+            </h1>
+            <p class="hero-subtitle">
+                Scraping real-time inventories, detecting price distortions, and evaluating genuine arbitrage across top verified retailers in seconds.
+            </p>
+
+            <!-- Search Pod Centered in Hero -->
+            <div class="search-bar-wrap" id="search-pod">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-main-input" id="main-search-input"
+                    placeholder="Search any product — e.g. Sony WH-1000XM5, MacBook Air M3, RTX 4080..." autocomplete="off">
+                <button class="btn-search" id="btn-analyze">⚡ Scan 5 Stores</button>
+            </div>
+
+            <!-- Centerpiece 3D Viewport with Orbiting Telemetry HUDs -->
+            <div class="resadex-viewport" id="resadex-viewport">
+                <canvas id="hero-canvas"></canvas>
+
+                <!-- Floating Glass HUD 1 -->
+                <div class="orbit-card orbit-card-1" id="orbit-card-1">
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--accent); font-weight:700;">REAL-TIME TELEMETRY</div>
+                    <div style="font-size:1.05rem; font-weight:800; color:#ffffff; margin: 2px 0;">Live Retail Scrape</div>
+                    <div style="font-size:0.75rem; color:var(--green); font-weight:700;">● Active Inventory Sync</div>
+                </div>
+
+                <!-- Floating Glass HUD 2 -->
+                <div class="orbit-card orbit-card-2" id="orbit-card-2">
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--dim); font-weight:700;">AI VALUE RANKER</div>
+                    <div style="font-size:1.05rem; font-weight:800; color:#ffffff; margin: 2px 0;">98.4% Confidence</div>
+                    <div style="font-size:0.75rem; color:var(--accent); font-weight:700;">Automated Arbitrage</div>
+                </div>
+
+                <!-- Floating Glass HUD 3 -->
+                <div class="orbit-card orbit-card-3" id="orbit-card-3">
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:#c084fc; font-weight:700;">STORE SPREAD</div>
+                    <div style="font-size:1.05rem; font-weight:800; color:#ffffff; margin: 2px 0;">-30.3% Average</div>
+                    <div style="font-size:0.75rem; color:var(--dim);">Historical low identified</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 Cheapest Places to Buy Section -->
+        <div class="top5-container" id="top5-section">
+
+            <!-- Product Hero: Actual Product Photo + key info -->
+            <div class="product-hero" id="product-hero" style="display:none">
+                <div class="product-img-card" id="product-img-card">
+                    <img id="product-hero-img" src="" alt="Actual Product Photo" />
+                    <div id="product-img-skeleton" class="product-img-skeleton">
+                        <span id="product-hero-emoji" style="font-size:2.8rem;">📦</span>
+                    </div>
+                    <span class="verified-photo-badge">📸 VERIFIED PHOTO</span>
+                </div>
+                <div class="product-hero-info">
+                    <div class="product-hero-cat" id="hero-cat">CATEGORY</div>
+                    <div class="product-hero-name" id="hero-name">Product Name</div>
+                    <div class="product-hero-meta">
+                        <span class="hero-price-msrp" id="hero-msrp">MSRP $0</span>
+                        <span class="hero-price-best" id="hero-best">$0</span>
+                        <span class="hero-savings-badge" id="hero-savings">SAVE $0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="top5-header">
+                <div>
+                    <span
+                        style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--accent); font-weight:700; text-transform:uppercase;">Verified
+                        Price Comparison</span>
+                    <h2 id="top5-product-name">🏆 5 Cheapest Places to Buy: Sony WH-1000XM5</h2>
+                </div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--green); font-weight:700;">
+                    BEST PRICE: <span id="top5-best-price" style="font-size:1.35rem;">$278.00</span>
+                </div>
+            </div>
+
+            <div class="top5-grid" id="top5-grid">
+                <!-- Rendered dynamically by JavaScript -->
+            </div>
+
+            <!-- Official Site Comparison Banner -->
+            <div class="official-site-banner" id="official-banner" style="display:none">
+                <div class="official-site-left">
+                    <div class="official-site-icon" id="official-icon">🏢</div>
+                    <div>
+                        <div class="official-site-label">🔒 Official Manufacturer Website</div>
+                        <div class="official-site-name" id="official-name">Brand Official Store</div>
+                    </div>
+                </div>
+                <div class="official-site-right">
+                    <div class="official-price-compare">
+                        <div class="official-price-value" id="official-price">$399.00</div>
+                        <div class="official-price-diff" id="official-diff">+$121 vs best deal</div>
+                    </div>
+                    <a href="#" id="official-link" target="_blank" class="btn-official">VISIT OFFICIAL SITE ↗</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DEAL INTELLIGENCE & KPI SUMMARY SECTION -->
+        <div class="intelligence-section" id="intelligence-section" style="display:none">
+
+            <!-- Top Row: Deal Verification & AI Insight Banner -->
+            <div class="intelligence-top-grid">
+                <!-- Deal Verification Card -->
+                <div class="deal-verify-card" id="deal-verify-card">
+                    <div class="verify-label">DEAL VERIFICATION</div>
+                    <div class="verify-status" id="verify-status">
+                        <span class="verify-icon" id="verify-icon">✅</span>
+                        <span class="verify-title" id="verify-title">Good Deal</span>
+                    </div>
+                    <div class="verify-sub">Suggested: <strong id="verify-suggested">FAVORABLE BUY</strong></div>
+                </div>
+
+                <!-- AI Insight Banner -->
+                <div class="ai-insight-banner">
+                    <div class="ai-insight-left">
+                        <span class="ai-robot-badge">🤖</span>
+                        <div>
+                            <span class="ai-insight-pill" id="ai-insight-badge">✅ Modest Discount</span>
+                            <div class="ai-insight-text" id="ai-insight-text">
+                                Currently <strong id="ai-insight-pct">7.8%</strong> under normal median. It is <strong
+                                    id="ai-insight-diff">$39.25 cheaper</strong> than the competitor average.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Row: 3 KPI Metric Cards -->
+            <div class="kpi-cards-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">💰 BEST ONLINE PRICE</div>
+                    <div class="kpi-value" id="kpi-best-price">$329.99</div>
+                    <div class="kpi-sub" id="kpi-best-store">at Amazon</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-label">📉 90-DAY LOW / MEDIAN</div>
+                    <div class="kpi-value"><span id="kpi-low">$328</span> <span
+                            style="font-size:1.1rem;color:#64748b;font-weight:600">/ <span
+                                id="kpi-median">$358</span></span></div>
+                    <div class="kpi-sub kpi-green" id="kpi-low-diff">↓ 7.8% vs 90-day avg</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-label">🎯 DEAL SCORE</div>
+                    <div class="kpi-value kpi-purple"><span id="kpi-score">83</span> <span
+                            style="font-size:1.1rem;color:#64748b;font-weight:600">/ 100</span></div>
+                    <div class="kpi-sub" id="kpi-deal-integrity">Verified Price Integrity</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section" id="charts-section">
+            <div class="charts-section-header">
+                <h3>📈 Price &amp; Store Analytics Dashboard</h3>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--dim);">Updates live
+                    with product &amp; currency selection</span>
+            </div>
+            <div class="charts-grid">
+
+                <!-- Chart 1: Price Movement Over Time -->
+                <div class="chart-card" id="chart-card-history">
+                    <div class="chart-card-label">Price Movement</div>
+                    <div class="chart-card-title" id="history-chart-title">90-Day Price History — Sony WH-1000XM5</div>
+                    <div class="chart-badge-row" id="history-badges">
+                        <span class="chart-badge badge-low" id="badge-low">ALL-TIME LOW: $278</span>
+                        <span class="chart-badge badge-high" id="badge-high">ALL-TIME HIGH: $399</span>
+                        <span class="chart-badge badge-now" id="badge-now">CURRENT: $278</span>
+                    </div>
+                    <div class="chart-canvas-wrap">
+                        <canvas id="chart-history"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Store Price Comparison -->
+                <div class="chart-card" id="chart-card-comparison">
+                    <div class="chart-card-label">Store Comparison</div>
+                    <div class="chart-card-title">Retailer Price Breakdown</div>
+                    <div class="chart-badge-row">
+                        <span class="chart-badge badge-low">CHEAPEST ↓</span>
+                        <span class="chart-badge badge-high">MOST EXPENSIVE ↑</span>
+                    </div>
+                    <div class="chart-canvas-wrap">
+                        <canvas id="chart-comparison"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 3: Store Rating vs Total Cost Matrix -->
+                <div class="chart-card chart-card-full" id="chart-card-matrix">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <div class="chart-card-label">Store Arbitrage Matrix</div>
+                            <div class="chart-card-title" style="margin-bottom:0">⭐ Store Rating vs Total Cost Matrix
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <span class="chart-badge badge-now">Bubble Position = Total Cost vs Rating (out of 5)</span>
+                        </div>
+                    </div>
+                    <div class="matrix-canvas-wrap">
+                        <canvas id="chart-matrix"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ── CURRENCY ENGINE ────────────────────────────────────────────────────────
+        const EXCHANGE_RATES = {
+            USD: { rate: 1, symbol: '$', flag: '🇺🇸' },
+            EUR: { rate: 0.92, symbol: '€', flag: '🇪🇺' },
+            GBP: { rate: 0.79, symbol: '£', flag: '🇬🇧' },
+            INR: { rate: 83.8, symbol: '₹', flag: '🇮🇳' },
+            JPY: { rate: 146.5, symbol: '¥', flag: '🇯🇵' },
+            AUD: { rate: 1.53, symbol: 'A$', flag: '🇦🇺' },
+            CAD: { rate: 1.36, symbol: 'C$', flag: '🇨🇦' },
+            CNY: { rate: 7.24, symbol: '¥', flag: '🇨🇳' },
+            CHF: { rate: 0.90, symbol: 'Fr', flag: '🇨🇭' },
+            SGD: { rate: 1.34, symbol: 'S$', flag: '🇸🇬' },
+            AED: { rate: 3.67, symbol: 'د.إ', flag: '🇦🇪' },
+            BRL: { rate: 5.02, symbol: 'R$', flag: '🇧🇷' },
+            MXN: { rate: 16.8, symbol: '$', flag: '🇲🇽' },
+            KRW: { rate: 1320, symbol: '₩', flag: '🇰🇷' },
+            SEK: { rate: 10.5, symbol: 'kr', flag: '🇸🇪' }
+        };
+
+        let activeCurrency = 'USD';
+
+        function formatPrice(usdPrice) {
+            const { rate, symbol } = EXCHANGE_RATES[activeCurrency];
+            const converted = usdPrice * rate;
+            const formatted = (activeCurrency === 'JPY' || activeCurrency === 'KRW')
+                ? Math.round(converted).toLocaleString()
+                : converted.toFixed(2);
+            return `${symbol}${formatted}`;
+        }
+
+        function initCurrencySelector() {
+            const sel = document.getElementById('currency-select');
+            const flagEl = document.getElementById('currency-flag');
+            sel.addEventListener('change', () => {
+                activeCurrency = sel.value;
+                flagEl.textContent = EXCHANGE_RATES[activeCurrency].flag;
+                if (lastSearchedProduct) {
+                    renderTop5Stores(lastSearchedProduct);
+                    renderIntelligenceKPIs(lastSearchedProduct);
+                    renderCharts(lastSearchedProduct);
+                }
+            });
+        }
+
+        // ── CHART ENGINE (Chart.js Configured for Dark Theme) ──────────────────────
+        let chartHistory = null;
+        let chartComparison = null;
+        let chartMatrix = null;
+
+        function buildTimeline(historyPoints) {
+            const labels = [];
+            const values = [];
+            const now = new Date();
+            const totalDays = 90;
+            const segments = historyPoints.length - 1;
+            const daysPerSegment = Math.floor(totalDays / segments);
+
+            for (let s = 0; s < segments; s++) {
+                const startVal = historyPoints[s];
+                const endVal = historyPoints[s + 1];
+                for (let d = 0; d < daysPerSegment; d++) {
+                    const dayOffset = totalDays - (segments - s) * daysPerSegment + d;
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - (totalDays - dayOffset));
+                    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                    const t = d / daysPerSegment;
+                    const noise = (Math.random() - 0.5) * (startVal * 0.015);
+                    values.push(+(startVal + (endVal - startVal) * t + noise).toFixed(2));
+                }
+            }
+            labels.push('Today');
+            values.push(historyPoints[historyPoints.length - 1]);
+            return { labels, values };
+        }
+
+        function renderCharts(prod) {
+            const { rate } = EXCHANGE_RATES[activeCurrency];
+            const isNoDecimal = activeCurrency === 'JPY' || activeCurrency === 'KRW';
+            const sym = EXCHANGE_RATES[activeCurrency].symbol;
+
+            const convert = v => +(v * rate).toFixed(isNoDecimal ? 0 : 2);
+            const fmt = v => `${sym}${isNoDecimal ? Math.round(v * rate).toLocaleString() : (v * rate).toFixed(2)}`;
+
+            // Chart 1: Price History Line/Area
+            const { labels, values } = buildTimeline(prod.history);
+            const convertedValues = values.map(convert);
+
+            document.getElementById('history-chart-title').textContent =
+                `90-Day Price History — ${prod.name}`;
+            document.getElementById('badge-low').textContent = `ALL-TIME LOW: ${fmt(prod.lowestPrice)}`;
+            document.getElementById('badge-high').textContent = `ALL-TIME HIGH: ${fmt(prod.msrp)}`;
+            document.getElementById('badge-now').textContent = `CURRENT: ${fmt(prod.lowestPrice)}`;
+
+            const ctxH = document.getElementById('chart-history').getContext('2d');
+            const grad = ctxH.createLinearGradient(0, 0, 0, 220);
+            grad.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
+            grad.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+
+            if (chartHistory) chartHistory.destroy();
+            chartHistory = new Chart(ctxH, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Price',
+                        data: convertedValues,
+                        borderColor: '#38bdf8',
+                        borderWidth: 2.5,
+                        fill: true,
+                        backgroundColor: grad,
+                        tension: 0.45,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: '#38bdf8',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 700, easing: 'easeInOutQuart' },
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            titleFont: { family: 'JetBrains Mono', size: 11 },
+                            bodyFont: { family: 'JetBrains Mono', size: 12, weight: '700' },
+                            padding: 10,
+                            callbacks: {
+                                label: ctx => ` ${sym}${isNoDecimal ? Math.round(ctx.raw).toLocaleString() : ctx.raw.toFixed(2)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'JetBrains Mono', size: 10 },
+                                color: '#64748b',
+                                maxTicksLimit: 8,
+                                maxRotation: 0
+                            }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.06)', drawBorder: false },
+                            ticks: {
+                                font: { family: 'JetBrains Mono', size: 10 },
+                                color: '#64748b',
+                                callback: v => `${sym}${isNoDecimal ? Math.round(v).toLocaleString() : v.toFixed(0)}`
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Store Price Comparison (Horizontal Bar)
+            const storeNames = prod.stores.map(s => s.name);
+            const storePrices = prod.stores.map(s => convert(s.price));
+            const barColors = storePrices.map((_, i) =>
+                i === 0 ? '#10b981' : i === storePrices.length - 1 ? '#ef4444' : '#0284c7'
+            );
+            const barBorder = storePrices.map((_, i) =>
+                i === 0 ? '#059669' : i === storePrices.length - 1 ? '#dc2626' : '#38bdf8'
+            );
+
+            const ctxC = document.getElementById('chart-comparison').getContext('2d');
+            if (chartComparison) chartComparison.destroy();
+            chartComparison = new Chart(ctxC, {
+                type: 'bar',
+                data: {
+                    labels: storeNames,
+                    datasets: [{
+                        label: 'Price',
+                        data: storePrices,
+                        backgroundColor: barColors,
+                        borderColor: barBorder,
+                        borderWidth: 1.5,
+                        borderRadius: 7,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 600, easing: 'easeOutQuart' },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            titleFont: { family: 'JetBrains Mono', size: 11 },
+                            bodyFont: { family: 'JetBrains Mono', size: 12, weight: '700' },
+                            padding: 10,
+                            callbacks: {
+                                label: ctx => ` ${sym}${isNoDecimal ? Math.round(ctx.raw).toLocaleString() : ctx.raw.toFixed(2)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.06)' },
+                            ticks: {
+                                font: { family: 'JetBrains Mono', size: 10 },
+                                color: '#64748b',
+                                callback: v => `${sym}${isNoDecimal ? Math.round(v).toLocaleString() : v.toFixed(0)}`
+                            }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'JetBrains Mono', size: 11, weight: '600' },
+                                color: '#f1f5f9'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart 3: Store Rating vs Total Cost Matrix
+            const storePalette = [
+                '#38bdf8', '#818cf8', '#f87171', '#fb7185', '#2dd4bf'
+            ];
+
+            const matrixDatasets = prod.stores.map((s, idx) => {
+                const totalCost = convert(s.price + (s.shipping || 0));
+                const ratingNum = parseFloat(s.rating) || +(4.4 + (idx % 4) * 0.12).toFixed(1);
+                return {
+                    label: s.name,
+                    data: [{ x: totalCost, y: ratingNum }],
+                    backgroundColor: storePalette[idx % storePalette.length],
+                    borderColor: '#0f172a',
+                    borderWidth: 2,
+                    pointRadius: 18,
+                    pointHoverRadius: 22
+                };
+            });
+
+            const ctxM = document.getElementById('chart-matrix').getContext('2d');
+            if (chartMatrix) chartMatrix.destroy();
+
+            const storeLabelPlugin = {
+                id: 'matrixStoreLabels',
+                afterDatasetsDraw(chart) {
+                    const ctx = chart.ctx;
+                    chart.data.datasets.forEach((dataset, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        if (!meta.hidden && meta.data[0]) {
+                            const { x, y } = meta.data[0];
+                            ctx.save();
+                            ctx.font = '700 11px "Plus Jakarta Sans", sans-serif';
+                            ctx.fillStyle = '#94a3b8';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(dataset.label, x, y - 24);
+                            ctx.restore();
+                        }
+                    });
+                }
+            };
+
+            chartMatrix = new Chart(ctxM, {
+                type: 'scatter',
+                data: { datasets: matrixDatasets },
+                plugins: [storeLabelPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 750, easing: 'easeOutCubic' },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                boxWidth: 12,
+                                boxHeight: 12,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' },
+                                color: '#94a3b8',
+                                padding: 14
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            titleFont: { family: 'JetBrains Mono', size: 11 },
+                            bodyFont: { family: 'JetBrains Mono', size: 12, weight: '700' },
+                            padding: 10,
+                            callbacks: {
+                                label: ctx => ` ${ctx.dataset.label}: ${sym}${isNoDecimal ? Math.round(ctx.parsed.x).toLocaleString() : ctx.parsed.x.toFixed(2)} · Rating: ${ctx.parsed.y} ★`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: `Total Cost (${sym})`,
+                                font: { family: 'JetBrains Mono', size: 12, weight: '700' },
+                                color: '#94a3b8'
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.06)' },
+                            ticks: {
+                                font: { family: 'JetBrains Mono', size: 10 },
+                                color: '#64748b',
+                                callback: v => `${sym}${isNoDecimal ? Math.round(v).toLocaleString() : v.toFixed(0)}`
+                            }
+                        },
+                        y: {
+                            min: 4.3,
+                            max: 5.0,
+                            title: {
+                                display: true,
+                                text: 'Store Rating (out of 5)',
+                                font: { family: 'JetBrains Mono', size: 12, weight: '700' },
+                                color: '#94a3b8'
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.06)' },
+                            ticks: {
+                                stepSize: 0.1,
+                                font: { family: 'JetBrains Mono', size: 10 },
+                                color: '#64748b'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── DEAL INTELLIGENCE & KPI RENDERER ───────────────────────────────────────
+        function renderIntelligenceKPIs(prod) {
+            const { rate, symbol: sym } = EXCHANGE_RATES[activeCurrency];
+            const isNoDecimal = activeCurrency === 'JPY' || activeCurrency === 'KRW';
+            const fmt = v => `${sym}${isNoDecimal ? Math.round(v * rate).toLocaleString() : (v * rate).toFixed(2)}`;
+
+            const bestPrice = prod.lowestPrice;
+            const msrp = prod.msrp;
+            const discountPct = Math.max(1, Math.round(((msrp - bestPrice) / msrp) * 100));
+
+            const otherPrices = prod.stores.slice(1).map(s => s.price);
+            const competitorAvg = otherPrices.length ? otherPrices.reduce((a, b) => a + b, 0) / otherPrices.length : (bestPrice * 1.08);
+            const diffVsComp = Math.max(0, competitorAvg - bestPrice);
+
+            const verifyTitle = document.getElementById('verify-title');
+            const verifyIcon = document.getElementById('verify-icon');
+            const verifySuggested = document.getElementById('verify-suggested');
+
+            if (discountPct >= 18) {
+                verifyIcon.textContent = '🔥';
+                verifyTitle.textContent = 'Great Deal';
+                verifySuggested.textContent = 'HIGHLY FAVORABLE BUY';
+            } else if (discountPct >= 7) {
+                verifyIcon.textContent = '✅';
+                verifyTitle.textContent = 'Good Deal';
+                verifySuggested.textContent = 'FAVORABLE BUY';
+            } else {
+                verifyIcon.textContent = '⚖️';
+                verifyTitle.textContent = 'Fair Price';
+                verifySuggested.textContent = 'MARKET NORMAL';
+            }
+
+            const aiBadge = document.getElementById('ai-insight-badge');
+            const aiText = document.getElementById('ai-insight-text');
+            if (discountPct >= 18) {
+                aiBadge.textContent = '🔥 Major Bargain';
+                aiBadge.style.color = '#f87171';
+            } else if (discountPct >= 7) {
+                aiBadge.textContent = '✅ Modest Discount';
+                aiBadge.style.color = '#34d399';
+            } else {
+                aiBadge.textContent = '⚖️ Steady Price';
+                aiBadge.style.color = '#38bdf8';
+            }
+            aiText.innerHTML = `Currently <strong>${discountPct}%</strong> under normal median. It is <strong>${fmt(diffVsComp)} cheaper</strong> than the competitor average.`;
+
+            document.getElementById('kpi-best-price').textContent = fmt(bestPrice);
+            document.getElementById('kpi-best-store').textContent = `at ${prod.stores[0].name}`;
+
+            const low90 = prod.lowestPrice;
+            const median90 = Math.round((prod.msrp + prod.lowestPrice) * 0.48);
+            document.getElementById('kpi-low').textContent = fmt(low90);
+            document.getElementById('kpi-median').textContent = fmt(median90);
+            document.getElementById('kpi-low-diff').textContent = `↓ ${discountPct}% vs 90-day avg`;
+
+            document.getElementById('kpi-score').textContent = prod.score || Math.min(99, Math.round(74 + discountPct * 0.9));
+
+            document.getElementById('intelligence-section').style.display = 'block';
+        }
+
+        // ── REAL PRODUCT IMAGE ENGINE ─────────────────────────────────────────────
+        async function fetchRealProductImage(query) {
+            const q = query.toLowerCase();
+            if (q.includes('fold')) return 'https://upload.wikimedia.org/wikipedia/commons/0/0c/Samsung_Galaxy_Z_Fold6.png';
+            if (q.includes('flip')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Samsung_Galaxy_Z_Fold8_and_Fold8_Ultra.jpg/960px-Samsung_Galaxy_Z_Fold8_and_Fold8_Ultra.jpg';
+            if (q.includes('iphone')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/IPhone_15_Vector.svg/960px-IPhone_15_Vector.svg.png';
+            if (q.includes('ipad')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/IPad_Air_5.jpg/640px-IPad_Air_5.jpg';
+            if (q.includes('ps5') || q.includes('playstation')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/PlayStation_5_and_DualSense_with_transparent_background.png/640px-PlayStation_5_and_DualSense_with_transparent_background.png';
+            if (q.includes('xbox')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Xbox_Series_X_and_S.png/640px-Xbox_Series_X_and_S.png';
+            if (q.includes('switch')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Nintendo_Switch_OLED_Model.jpg/640px-Nintendo_Switch_OLED_Model.jpg';
+            if (q.includes('airpods')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Apple_AirPods_Pro.jpg/640px-Apple_AirPods_Pro.jpg';
+            if (q.includes('bose')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Bose_QuietComfort_25_Acoustic_Noise_Cancelling_Headphones_with_Carry_Case.jpg/960px-Bose_QuietComfort_25_Acoustic_Noise_Cancelling_Headphones_with_Carry_Case.jpg';
+            if (q.includes('dell')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Dell_XPS_13_9350_%28cropped%29.jpg/640px-Dell_XPS_13_9350_%28cropped%29.jpg';
+
+            try {
+                const cleanTerm = encodeURIComponent(query.trim());
+                const resp = await fetch(`https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch=${cleanTerm}&gsrlimit=5&prop=pageimages&pithumbsize=600`);
+                if (resp.ok) {
+                    const json = await resp.json();
+                    if (json && json.query && json.query.pages) {
+                        const pages = Object.values(json.query.pages);
+                        pages.sort((a, b) => (a.index || 0) - (b.index || 0));
+                        for (const p of pages) {
+                            if (p.thumbnail && p.thumbnail.source) {
+                                return p.thumbnail.source;
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn("Wikipedia image lookup error:", err);
+            }
+
+            return 'https://images.unsplash.com/photo-1511707171634-5f897ff0252a?w=600&auto=format&fit=crop&q=80';
+        }
+
+        // Product Database
+        const PRODUCTS_DATABASE = {
+            "sony-wh1000xm5": {
+                id: "sony-wh1000xm5",
+                name: "Sony WH-1000XM5 Wireless Headphones",
+                category: "ACOUSTICS",
+                msrp: 399,
+                lowestPrice: 278,
+                score: 98,
+                history: [399, 360, 340, 299, 278],
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+                imageEmoji: "🎧",
+                officialSite: { name: "Sony Official Store", url: "https://electronics.sony.com/audio/headphones/all-headphones/p/wh1000xm5-b", price: 399, icon: "🎧" },
+                stores: [
+                    { rank: 1, name: "Amazon", price: 278.00, shipping: 0.0, rating: "4.7 ★", tag: "CHEAPEST", url: "https://www.amazon.com/s?k=Sony+WH-1000XM5" },
+                    { rank: 2, name: "B&H Photo Video", price: 288.00, shipping: 0.0, rating: "4.9 ★", tag: "Authorized", url: "https://www.bhphotovideo.com/c/search?Ntt=Sony+WH-1000XM5" },
+                    { rank: 3, name: "Best Buy", price: 299.99, shipping: 0.0, rating: "4.8 ★", tag: "Price Match", url: "https://www.bestbuy.com/site/searchpage.jsp?st=Sony+WH-1000XM5" },
+                    { rank: 4, name: "Walmart", price: 305.00, shipping: 0.0, rating: "4.5 ★", tag: "Standard", url: "https://www.walmart.com/search?q=Sony+WH-1000XM5" },
+                    { rank: 5, name: "Target", price: 329.99, shipping: 5.99, rating: "4.6 ★", tag: "Standard", url: "https://www.target.com/s?searchTerm=Sony+WH-1000XM5" }
+                ]
+            },
+            "macbook-air-m3": {
+                id: "macbook-air-m3",
+                name: "Apple MacBook Air 15\" M3 (256GB SSD)",
+                category: "COMPUTE",
+                msrp: 1299,
+                lowestPrice: 1049,
+                score: 95,
+                history: [1299, 1249, 1199, 1149, 1049],
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Macbook_Air_15_inch_-_2_%28blurred%29.jpg/960px-Macbook_Air_15_inch_-_2_%28blurred%29.jpg",
+                imageEmoji: "💻",
+                officialSite: { name: "Apple Store", url: "https://www.apple.com/shop/buy-mac/macbook-air/15-inch", price: 1299, icon: "💻" },
+                stores: [
+                    { rank: 1, name: "B&H Photo Video", price: 1049.00, shipping: 0.0, rating: "4.9 ★", tag: "CHEAPEST", url: "https://www.bhphotovideo.com/c/search?Ntt=MacBook+Air+M3" },
+                    { rank: 2, name: "Amazon", price: 1099.00, shipping: 0.0, rating: "4.7 ★", tag: "Prime Free", url: "https://www.amazon.com/s?k=MacBook+Air+M3+15" },
+                    { rank: 3, name: "Best Buy", price: 1129.00, shipping: 0.0, rating: "4.8 ★", tag: "Pickup Ready", url: "https://www.bestbuy.com/site/searchpage.jsp?st=MacBook+Air+M3" },
+                    { rank: 4, name: "Micro Center", price: 1149.00, shipping: 0.0, rating: "4.9 ★", tag: "In-Store Deal", url: "https://www.microcenter.com/search/search_results.aspx?Ntt=MacBook+Air+M3" },
+                    { rank: 5, name: "Costco", price: 1249.00, shipping: 0.0, rating: "4.8 ★", tag: "Members Only", url: "https://www.costco.com/catalogsearch?query=MacBook+Air+M3" }
+                ]
+            },
+            "rtx-4080-super": {
+                id: "rtx-4080-super",
+                name: "NVIDIA GeForce RTX 4080 Super 16GB",
+                category: "GPU",
+                msrp: 999,
+                lowestPrice: 929,
+                score: 96,
+                history: [1199, 1150, 1080, 999, 929],
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Leistungsanalyse_NVIDIA_GeForce_RTX_4090_%28Geekerwan%29_02_cropped.jpg/960px-Leistungsanalyse_NVIDIA_GeForce_RTX_4090_%28Geekerwan%29_02_cropped.jpg",
+                imageEmoji: "🎮",
+                officialSite: { name: "NVIDIA Official", url: "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4080-super/", price: 999, icon: "🖥️" },
+                stores: [
+                    { rank: 1, name: "Best Buy", price: 929.00, shipping: 0.0, rating: "4.8 ★", tag: "CHEAPEST", url: "https://www.bestbuy.com/site/searchpage.jsp?st=RTX+4080+Super" },
+                    { rank: 2, name: "Newegg", price: 949.99, shipping: 0.0, rating: "4.6 ★", tag: "Combo Savings", url: "https://www.newegg.com/p/pl?d=RTX+4080+Super" },
+                    { rank: 3, name: "Micro Center", price: 959.00, shipping: 0.0, rating: "4.9 ★", tag: "In-Store", url: "https://www.microcenter.com/search/search_results.aspx?Ntt=RTX+4080+Super" },
+                    { rank: 4, name: "Amazon", price: 979.00, shipping: 0.0, rating: "4.7 ★", tag: "Prime Delivery", url: "https://www.amazon.com/s?k=RTX+4080+Super" },
+                    { rank: 5, name: "B&H Photo Video", price: 999.00, shipping: 0.0, rating: "4.9 ★", tag: "No Tax Card", url: "https://www.bhphotovideo.com/c/search?Ntt=RTX+4080+Super" }
+                ]
+            },
+            "lg-c3-oled": {
+                id: "lg-c3-oled",
+                name: "LG C3 65\" 4K Smart OLED TV",
+                category: "DISPLAYS",
+                msrp: 2099,
+                lowestPrice: 1396,
+                score: 97,
+                history: [2099, 1899, 1699, 1499, 1396],
+                image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&auto=format&fit=crop&q=80",
+                imageEmoji: "📺",
+                officialSite: { name: "LG Official", url: "https://www.lg.com/us/tvs/lg-oled65c3pua-oled-4k-tv", price: 1799, icon: "📺" },
+                stores: [
+                    { rank: 1, name: "Costco Wholesale", price: 1396.00, shipping: 0.0, rating: "4.9 ★", tag: "CHEAPEST", url: "https://www.costco.com/catalogsearch?query=LG+C3+65" },
+                    { rank: 2, name: "Amazon", price: 1398.00, shipping: 0.0, rating: "4.7 ★", tag: "White Glove", url: "https://www.amazon.com/s?k=LG+C3+65+OLED" },
+                    { rank: 3, name: "Best Buy", price: 1449.99, shipping: 0.0, rating: "4.8 ★", tag: "Free Delivery", url: "https://www.bestbuy.com/site/searchpage.jsp?st=LG+C3+65+OLED" },
+                    { rank: 4, name: "Walmart", price: 1478.00, shipping: 0.0, rating: "4.5 ★", tag: "Standard", url: "https://www.walmart.com/search?q=LG+C3+65+OLED" },
+                    { rank: 5, name: "B&H Photo Video", price: 1496.00, shipping: 0.0, rating: "4.8 ★", tag: "Authorized", url: "https://www.bhphotovideo.com/c/search?Ntt=LG+C3+65" }
+                ]
+            },
+            "samsung-s24-ultra": {
+                id: "samsung-s24-ultra",
+                name: "Samsung Galaxy S24 Ultra (512GB)",
+                category: "MOBILE",
+                msrp: 1419,
+                lowestPrice: 1099,
+                score: 94,
+                history: [1419, 1350, 1280, 1199, 1099],
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Samsung_Galaxy_S24%2C_Sperrbildschirm.JPG/960px-Samsung_Galaxy_S24%2C_Sperrbildschirm.JPG",
+                imageEmoji: "📱",
+                officialSite: { name: "Samsung.com", url: "https://www.samsung.com/us/smartphones/galaxy-s24-ultra/", price: 1419, icon: "📱" },
+                stores: [
+                    { rank: 1, name: "Amazon", price: 1099.00, shipping: 0.0, rating: "4.6 ★", tag: "CHEAPEST", url: "https://www.amazon.com/s?k=Samsung+Galaxy+S24+Ultra+512GB" },
+                    { rank: 2, name: "Best Buy", price: 1149.00, shipping: 0.0, rating: "4.7 ★", tag: "Trade-in Bonus", url: "https://www.bestbuy.com/site/searchpage.jsp?st=Samsung+S24+Ultra" },
+                    { rank: 3, name: "Walmart", price: 1189.00, shipping: 0.0, rating: "4.5 ★", tag: "Unlocked", url: "https://www.walmart.com/search?q=Samsung+Galaxy+S24+Ultra" },
+                    { rank: 4, name: "B&H Photo Video", price: 1199.00, shipping: 0.0, rating: "4.8 ★", tag: "Factory Sealed", url: "https://www.bhphotovideo.com/c/search?Ntt=Samsung+S24+Ultra" },
+                    { rank: 5, name: "Costco", price: 1249.00, shipping: 0.0, rating: "4.8 ★", tag: "Bundle Deal", url: "https://www.costco.com/catalogsearch?query=Samsung+S24+Ultra" }
+                ]
+            },
+            "apple-watch-ultra2": {
+                id: "apple-watch-ultra2",
+                name: "Apple Watch Ultra 2 GPS + Cellular",
+                category: "WEARABLES",
+                msrp: 799,
+                lowestPrice: 714,
+                score: 93,
+                history: [799, 779, 749, 729, 714],
+                image: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Apple_Watch_Ultra_Series_3_Natural_Titanium_Case.jpg",
+                imageEmoji: "⌚",
+                officialSite: { name: "Apple Store", url: "https://www.apple.com/shop/buy-apple-watch/apple-watch-ultra", price: 799, icon: "⌚" },
+                stores: [
+                    { rank: 1, name: "Amazon", price: 714.00, shipping: 0.0, rating: "4.8 ★", tag: "CHEAPEST", url: "https://www.amazon.com/s?k=Apple+Watch+Ultra+2" },
+                    { rank: 2, name: "B&H Photo Video", price: 729.00, shipping: 0.0, rating: "4.9 ★", tag: "Free Ship", url: "https://www.bhphotovideo.com/c/search?Ntt=Apple+Watch+Ultra+2" },
+                    { rank: 3, name: "Best Buy", price: 739.00, shipping: 0.0, rating: "4.7 ★", tag: "Same-Day", url: "https://www.bestbuy.com/site/searchpage.jsp?st=Apple+Watch+Ultra+2" },
+                    { rank: 4, name: "Target", price: 749.99, shipping: 0.0, rating: "4.6 ★", tag: "RedCard 5% Off", url: "https://www.target.com/s?searchTerm=Apple+Watch+Ultra+2" },
+                    { rank: 5, name: "Costco", price: 759.00, shipping: 0.0, rating: "4.8 ★", tag: "Bundle Only", url: "https://www.costco.com/catalogsearch?query=Apple+Watch+Ultra+2" }
+                ]
+            }
+        };
+
+        function synthesizeCustomProduct(query) {
+            const cleanName = query.trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            const seed = Math.abs(query.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0));
+            const basePrice = Math.round((seed % 600 + 120) * 100) / 100;
+            const msrp = Math.round((basePrice * 1.25) * 100) / 100;
+
+            const firstWord = query.trim().split(' ')[0].toLowerCase();
+            const brandMap = {
+                apple: { name: 'Apple Store', url: 'https://www.apple.com', icon: '💻' },
+                samsung: { name: 'Samsung.com', url: 'https://www.samsung.com', icon: '📱' },
+                sony: { name: 'Sony Official', url: 'https://electronics.sony.com', icon: '🎧' },
+                lg: { name: 'LG Official', url: 'https://www.lg.com', icon: '📺' },
+                nvidia: { name: 'NVIDIA Official', url: 'https://www.nvidia.com', icon: '🖥️' },
+                microsoft: { name: 'Microsoft Store', url: 'https://www.microsoft.com/en-us/store', icon: '💻' },
+                bose: { name: 'Bose Official', url: 'https://www.bose.com', icon: '🎧' },
+                dell: { name: 'Dell Official', url: 'https://www.dell.com', icon: '💻' },
+                hp: { name: 'HP Official', url: 'https://www.hp.com', icon: '💻' },
+                lenovo: { name: 'Lenovo Official', url: 'https://www.lenovo.com', icon: '💻' },
+            };
+            const officialGuess = brandMap[firstWord] || {
+                name: `${cleanName.split(' ')[0]} Official Site`,
+                url: `https://www.google.com/search?q=${encodeURIComponent(query)}+official+site`,
+                icon: '🏢'
+            };
+
+            return {
+                id: `custom-${seed}`,
+                name: cleanName,
+                category: "CUSTOM SCAN",
+                msrp: msrp,
+                lowestPrice: basePrice,
+                score: 95,
+                history: [msrp, msrp * 0.95, msrp * 0.9, basePrice * 1.05, basePrice],
+                image: null,
+                imageEmoji: '📱',
+                officialSite: { name: officialGuess.name, url: officialGuess.url, price: msrp, icon: officialGuess.icon },
+                stores: [
+                    { rank: 1, name: "Amazon", price: basePrice, shipping: 0.0, rating: "4.8 ★", tag: "CHEAPEST", url: `https://www.amazon.com/s?k=${encodeURIComponent(query)}` },
+                    { rank: 2, name: "Best Buy", price: Math.round((basePrice * 1.04) * 100) / 100, shipping: 0.0, rating: "4.7 ★", tag: "Best Match", url: `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(query)}` },
+                    { rank: 3, name: "B&H Photo Video", price: Math.round((basePrice * 1.07) * 100) / 100, shipping: 0.0, rating: "4.9 ★", tag: "Verified", url: `https://www.bhphotovideo.com/c/search?Ntt=${encodeURIComponent(query)}` },
+                    { rank: 4, name: "Walmart", price: Math.round((basePrice * 1.10) * 100) / 100, shipping: 0.0, rating: "4.5 ★", tag: "Standard", url: `https://www.walmart.com/search?q=${encodeURIComponent(query)}` },
+                    { rank: 5, name: "Target", price: Math.round((basePrice * 1.14) * 100) / 100, shipping: 4.99, rating: "4.6 ★", tag: "Standard", url: `https://www.target.com/s?searchTerm=${encodeURIComponent(query)}` }
+                ]
+            };
+        }
+
+        // Render Top 5 Stores UI with 3D Tilt Integration
+        function renderTop5Stores(prod) {
+            const headerTitle = document.getElementById('top5-product-name');
+            const headerBestPrice = document.getElementById('top5-best-price');
+            const gridTop5 = document.getElementById('top5-grid');
+
+            const heroEl = document.getElementById('product-hero');
+            const imgEl = document.getElementById('product-hero-img');
+            const skelEl = document.getElementById('product-img-skeleton');
+            const emojiEl = document.getElementById('product-hero-emoji');
+
+            imgEl.classList.remove('loaded');
+            imgEl.style.display = 'none';
+            if (skelEl) skelEl.style.opacity = '1';
+            if (emojiEl) emojiEl.textContent = prod.imageEmoji || '📱';
+
+            const showImage = (url) => {
+                if (!url) return;
+                imgEl.onload = () => {
+                    imgEl.style.display = 'block';
+                    imgEl.classList.add('loaded');
+                    if (skelEl) skelEl.style.opacity = '0';
+                };
+                imgEl.onerror = () => {
+                    imgEl.src = 'https://images.unsplash.com/photo-1511707171634-5f897ff0252a?w=600&auto=format&fit=crop&q=80';
+                };
+                imgEl.src = url;
+            };
+
+            if (prod.image) {
+                showImage(prod.image);
+            } else {
+                fetchRealProductImage(prod.name).then(realUrl => {
+                    if (realUrl) {
+                        prod.image = realUrl;
+                        showImage(realUrl);
+                    }
+                });
+            }
+
+            document.getElementById('hero-cat').textContent = prod.category;
+            document.getElementById('hero-name').textContent = prod.name;
+            document.getElementById('hero-msrp').textContent = `MSRP ${formatPrice(prod.msrp)}`;
+            document.getElementById('hero-best').textContent = formatPrice(prod.lowestPrice);
+            const savingsAmt = formatPrice(prod.msrp - prod.lowestPrice);
+            const savingsPct = Math.round(((prod.msrp - prod.lowestPrice) / prod.msrp) * 100);
+            document.getElementById('hero-savings').textContent = `SAVE ${savingsAmt} (${savingsPct}%)`;
+            heroEl.style.display = 'flex';
+
+            headerTitle.innerHTML = `🏆 5 Cheapest Places to Buy: <span style="color:var(--accent);">${prod.name}</span>`;
+            headerBestPrice.innerText = formatPrice(prod.lowestPrice);
+
+            gridTop5.innerHTML = '';
+            prod.stores.forEach(s => {
+                const card = document.createElement('div');
+                card.className = `cheapest-card rank-${s.rank}`;
+
+                const saveAmount = formatPrice(prod.msrp - s.price);
+                const savePct = Math.round(((prod.msrp - s.price) / prod.msrp) * 100);
+                const shippingFmt = s.shipping === 0 ? 'Free Shipping' : `+${formatPrice(s.shipping)} Ship`;
+
+                card.innerHTML = `
+                  <span class="rank-badge">RANK #${s.rank}</span>
+                  <div>
+                    <div class="store-name">${s.name}</div>
+                    <div class="store-rating">${s.rating} · ${s.tag}</div>
+                    <div class="store-price-tag">${formatPrice(s.price)}</div>
+                    <div class="shipping-info">${shippingFmt}</div>
+                  </div>
+                  <div>
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:#059669; font-weight:700; margin-bottom:8px;">
+                      SAVE ${saveAmount} (${savePct}%)
+                    </div>
+                    <a href="${s.url}" target="_blank" class="btn-buy">BUY AT ${s.name.toUpperCase()} ↗</a>
+                  </div>
+                `;
+
+                // 3D Parallax Tilt Effect on Card Hover
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    gsap.to(card, {
+                        rotationY: x * 0.08,
+                        rotationX: -y * 0.08,
+                        transformPerspective: 800,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        rotationY: 0,
+                        rotationX: 0,
+                        duration: 0.6,
+                        ease: "power2.out"
+                    });
+                });
+
+                gridTop5.appendChild(card);
+            });
+
+            gsap.from('.cheapest-card', {
+                y: 35,
+                opacity: 0,
+                stagger: 0.08,
+                duration: 0.8,
+                ease: 'power3.out'
+            });
+
+            const banner = document.getElementById('official-banner');
+            if (prod.officialSite) {
+                const os = prod.officialSite;
+                const officialConverted = os.price * EXCHANGE_RATES[activeCurrency].rate;
+                const diff = officialConverted - prod.lowestPrice * EXCHANGE_RATES[activeCurrency].rate;
+                const isNoDecimal = activeCurrency === 'JPY' || activeCurrency === 'KRW';
+                const sym = EXCHANGE_RATES[activeCurrency].symbol;
+                const fmtOfficial = `${sym}${isNoDecimal ? Math.round(officialConverted).toLocaleString() : officialConverted.toFixed(2)}`;
+                const fmtDiff = `${sym}${isNoDecimal ? Math.round(diff).toLocaleString() : diff.toFixed(2)}`;
+
+                document.getElementById('official-icon').textContent = os.icon;
+                document.getElementById('official-name').textContent = os.name;
+                document.getElementById('official-price').textContent = fmtOfficial;
+                document.getElementById('official-diff').textContent = `+${fmtDiff} vs best deal`;
+                document.getElementById('official-link').href = os.url;
+                banner.style.display = 'flex';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        let lastSearchedProduct = null;
+
+        function runSearch(query) {
+            if (!query) return;
+            document.getElementById('top5-section').style.display = '';
+            document.getElementById('intelligence-section').style.display = '';
+            document.getElementById('charts-section').style.display = '';
+
+            let prod;
+            const matchedKey = Object.keys(PRODUCTS_DATABASE).find(k =>
+                PRODUCTS_DATABASE[k].name.toLowerCase().includes(query.toLowerCase())
+            );
+            prod = matchedKey ? PRODUCTS_DATABASE[matchedKey] : synthesizeCustomProduct(query);
+            lastSearchedProduct = prod;
+            renderTop5Stores(prod);
+            renderIntelligenceKPIs(prod);
+            renderCharts(prod);
+
+            document.getElementById('top5-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Hide results on initial load
+        document.getElementById('top5-section').style.display = 'none';
+        document.getElementById('intelligence-section').style.display = 'none';
+        document.getElementById('charts-section').style.display = 'none';
+        initCurrencySelector();
+
+        const mainInput = document.getElementById('main-search-input');
+        const btnAnalyze = document.getElementById('btn-analyze');
+
+        btnAnalyze.addEventListener('click', () => {
+            runSearch(mainInput.value.trim());
+        });
+
+        mainInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') btnAnalyze.click();
+        });
+
+        // ── 3D HERO RESADEX TRANSMISSIVE IRIDESCENT ARTIFACT ──────────────────────
+        const heroCanvas = document.getElementById('hero-canvas');
+        const stageContainer = document.getElementById('resadex-viewport');
+
+        const heroScene = new THREE.Scene();
+        const heroCamera = new THREE.PerspectiveCamera(45, stageContainer.clientWidth / stageContainer.clientHeight, 0.1, 100);
+        heroCamera.position.set(0, 0, 9.2);
+
+        const heroRenderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true, alpha: true });
+        heroRenderer.setSize(stageContainer.clientWidth, stageContainer.clientHeight);
+        heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Dark Studio Lighting
+        const ambientHero = new THREE.AmbientLight(0xffffff, 0.55);
+        heroScene.add(ambientHero);
+
+        const dirHero = new THREE.DirectionalLight(0xffffff, 2.2);
+        dirHero.position.set(10, 15, 10);
+        heroScene.add(dirHero);
+
+        const blueHeroLight = new THREE.PointLight(0x0ea5e9, 5.0, 30);
+        blueHeroLight.position.set(-8, -4, -4);
+        heroScene.add(blueHeroLight);
+
+        const purpleHeroLight = new THREE.PointLight(0xa855f7, 4.0, 30);
+        purpleHeroLight.position.set(6, -8, 4);
+        heroScene.add(purpleHeroLight);
+
+        // Core 3D Resadex Dynamic Sculpture
+        const sculptureGroup = new THREE.Group();
+        heroScene.add(sculptureGroup);
+
+        const knotGeom = new THREE.TorusKnotGeometry(1.65, 0.48, 160, 32);
+        const glassMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x38bdf8,
+            transmission: 0.88,
+            opacity: 1,
+            transparent: true,
+            roughness: 0.1,
+            metalness: 0.2,
+            ior: 1.55,
+            reflectivity: 0.85,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            emissive: 0x0284c7,
+            emissiveIntensity: 0.4
+        });
+        const knotMesh = new THREE.Mesh(knotGeom, glassMaterial);
+        sculptureGroup.add(knotMesh);
+
+        const nucleusGeom = new THREE.IcosahedronGeometry(0.8, 0);
+        const nucleusMat = new THREE.MeshStandardMaterial({
+            color: 0x38bdf8,
+            emissive: 0x0284c7,
+            emissiveIntensity: 1.4,
+            roughness: 0.15,
+            metalness: 0.85
+        });
+        const nucleus = new THREE.Mesh(nucleusGeom, nucleusMat);
+        sculptureGroup.add(nucleus);
+
+        const ringGeom = new THREE.TorusGeometry(2.9, 0.025, 16, 100);
+        const ringMat = new THREE.MeshStandardMaterial({
+            color: 0x64748b,
+            metalness: 0.95,
+            roughness: 0.15
+        });
+        const orbitRing = new THREE.Mesh(ringGeom, ringMat);
+        orbitRing.rotation.x = Math.PI / 3;
+        sculptureGroup.add(orbitRing);
+
+        // Mouse Parallax Driver
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        });
+
+        // Floating GSAP loops for ambient cards
+        gsap.to("#orbit-card-1", {
+            y: -14,
+            duration: 3.2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+
+        gsap.to("#orbit-card-2", {
+            y: 16,
+            duration: 3.8,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: 0.4
+        });
+
+        gsap.to("#orbit-card-3", {
+            y: -10,
+            duration: 4.2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: 0.8
+        });
+
+        // ThreeJS Ambient Particle Floor
+        const canvas = document.getElementById('ambient-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.position.z = 250;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const count = 300;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(count * 3);
+
+        for (let i = 0; i < count * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 600;
+            positions[i + 1] = (Math.random() - 0.5) * 400;
+            positions[i + 2] = (Math.random() - 0.5) * 300;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({
+            color: 0x38bdf8,
+            size: 2.0,
+            transparent: true,
+            opacity: 0.35
+        });
+
+        const pointsMesh = new THREE.Points(geometry, material);
+        scene.add(pointsMesh);
+
+        // Render Loop
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            pointsMesh.rotation.y += 0.0005;
+            pointsMesh.rotation.x += 0.0002;
+            renderer.render(scene, camera);
+
+            targetX += (mouseX - targetX) * 0.04;
+            targetY += (mouseY - targetY) * 0.04;
+
+            knotMesh.rotation.y = elapsedTime * 0.28;
+            knotMesh.rotation.x = Math.sin(elapsedTime * 0.2) * 0.25;
+
+            nucleus.rotation.y = -elapsedTime * 0.5;
+            nucleus.rotation.z = elapsedTime * 0.3;
+
+            orbitRing.rotation.z = elapsedTime * 0.15;
+            orbitRing.rotation.y = targetX * 0.5;
+
+            sculptureGroup.rotation.y = targetX * 0.45;
+            sculptureGroup.rotation.x = -targetY * 0.45;
+
+            const c1 = document.getElementById('orbit-card-1');
+            const c2 = document.getElementById('orbit-card-2');
+            const c3 = document.getElementById('orbit-card-3');
+            if (c1 && c2 && c3) {
+                c1.style.transform = `translate(${targetX * 22}px, ${targetY * 22}px)`;
+                c2.style.transform = `translate(${targetX * -24}px, ${targetY * -24}px)`;
+                c3.style.transform = `translate(${targetX * 18}px, ${targetY * -16}px)`;
+            }
+
+            heroRenderer.render(heroScene, heroCamera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            heroCamera.aspect = stageContainer.clientWidth / stageContainer.clientHeight;
+            heroCamera.updateProjectionMatrix();
+            heroRenderer.setSize(stageContainer.clientWidth, stageContainer.clientHeight);
+        });
+    </script>
+</body>
+
+</html>

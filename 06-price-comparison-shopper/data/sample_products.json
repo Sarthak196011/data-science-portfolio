@@ -1,0 +1,109 @@
+{
+  "categories": [
+    "Headphones & Audio",
+    "Smartphones & Tablets",
+    "Laptops & Computers",
+    "TVs & Home Entertainment",
+    "Smartwatches & Wearables"
+  ],
+  "products": [
+    {
+      "id": "sony-wh1000xm5",
+      "category": "Headphones & Audio",
+      "name": "Sony WH-1000XM5 Wireless Noise-Canceling Headphones",
+      "brand": "Sony",
+      "msrp": 399.99,
+      "specs": "30hr battery, Auto NC Optimizer, 2 processors, 8 mics, Hi-Res Audio",
+      "image_url": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80",
+      "history_90d": {
+        "dates": ["2023-10-01", "2023-10-15", "2023-11-01", "2023-11-20", "2023-11-24", "2023-12-01", "2023-12-15", "2023-12-25", "2024-01-05", "2024-01-15"],
+        "prices": [398.00, 398.00, 379.99, 348.00, 328.00, 348.00, 368.00, 398.00, 348.00, 329.99]
+      },
+      "stores": [
+        { "store": "Amazon", "price": 329.99, "original_price": 399.99, "shipping": 0.00, "in_stock": true, "rating": 4.6, "reviews": 12840, "url": "https://amazon.com", "badge": "Lowest Price" },
+        { "store": "Best Buy", "price": 349.99, "original_price": 399.99, "shipping": 0.00, "in_stock": true, "rating": 4.7, "reviews": 8420, "url": "https://bestbuy.com", "badge": "Free 2-day" },
+        { "store": "B&H Photo", "price": 348.00, "original_price": 399.99, "shipping": 0.00, "in_stock": true, "rating": 4.8, "reviews": 3120, "url": "https://bhphotovideo.com", "badge": "Authorized Dealer" },
+        { "store": "Walmart", "price": 379.00, "original_price": 399.99, "shipping": 0.00, "in_stock": true, "rating": 4.4, "reviews": 5190, "url": "https://walmart.com", "badge": "Marketplace" },
+        { "store": "Target", "price": 399.99, "original_price": 399.99, "shipping": 5.99, "in_stock": true, "rating": 4.5, "reviews": 2300, "url": "https://target.com", "badge": "Standard" }
+      ]
+    },
+    {
+      "id": "apple-macbook-air-m3",
+      "category": "Laptops & Computers",
+      "name": "Apple MacBook Air 13-inch (M3 Chip, 8GB Unified Memory, 256GB SSD)",
+      "brand": "Apple",
+      "msrp": 1099.00,
+      "specs": "Apple M3 8-core CPU, 10-core GPU, 13.6\" Liquid Retina Display, 18hr battery",
+      "image_url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80",
+      "history_90d": {
+        "dates": ["2023-10-01", "2023-10-15", "2023-11-01", "2023-11-20", "2023-11-24", "2023-12-01", "2023-12-15", "2023-12-25", "2024-01-05", "2024-01-15"],
+        "prices": [1099.00, 1099.00, 1049.00, 999.00, 899.00, 949.00, 999.00, 1049.00, 949.00, 899.00]
+      },
+      "stores": [
+        { "store": "Amazon", "price": 899.00, "original_price": 1099.00, "shipping": 0.00, "in_stock": true, "rating": 4.8, "reviews": 4350, "url": "https://amazon.com", "badge": "Record Low" },
+        { "store": "B&H Photo", "price": 899.00, "original_price": 1099.00, "shipping": 0.00, "in_stock": true, "rating": 4.9, "reviews": 1100, "url": "https://bhphotovideo.com", "badge": "Top Rated" },
+        { "store": "Best Buy", "price": 949.00, "original_price": 1099.00, "shipping": 0.00, "in_stock": true, "rating": 4.8, "reviews": 3200, "url": "https://bestbuy.com", "badge": "Plus Member Deal" },
+        { "store": "Walmart", "price": 999.00, "original_price": 1099.00, "shipping": 0.00, "in_stock": true, "rating": 4.5, "reviews": 980, "url": "https://walmart.com", "badge": "Standard" },
+        { "store": "Apple Store", "price": 1099.00, "original_price": 1099.00, "shipping": 0.00, "in_stock": true, "rating": 4.9, "reviews": 15000, "url": "https://apple.com", "badge": "Official MSRP" }
+      ]
+    },
+    {
+      "id": "lg-c3-65-oled-tv",
+      "category": "TVs & Home Entertainment",
+      "name": "LG 65-inch Class C3 Series OLED 4K UHD Smart TV (OLED65C3PUA)",
+      "brand": "LG",
+      "msrp": 1999.99,
+      "specs": "α9 AI Processor Gen6, 120Hz, Dolby Vision / Atmos, G-Sync, FreeSync",
+      "image_url": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&auto=format&fit=crop&q=80",
+      "history_90d": {
+        "dates": ["2023-10-01", "2023-10-15", "2023-11-01", "2023-11-20", "2023-11-24", "2023-12-01", "2023-12-15", "2023-12-25", "2024-01-05", "2024-01-15"],
+        "prices": [1896.99, 1796.99, 1696.99, 1596.99, 1496.99, 1596.99, 1696.99, 1796.99, 1596.99, 1496.99]
+      },
+      "stores": [
+        { "store": "Amazon", "price": 1496.99, "original_price": 1999.99, "shipping": 0.00, "in_stock": true, "rating": 4.7, "reviews": 2980, "url": "https://amazon.com", "badge": "$503 Off" },
+        { "store": "Best Buy", "price": 1499.99, "original_price": 1999.99, "shipping": 0.00, "in_stock": true, "rating": 4.8, "reviews": 4120, "url": "https://bestbuy.com", "badge": "Free Delivery" },
+        { "store": "B&H Photo", "price": 1496.99, "original_price": 1999.99, "shipping": 0.00, "in_stock": true, "rating": 4.9, "reviews": 850, "url": "https://bhphotovideo.com", "badge": "Includes Mount" },
+        { "store": "Walmart", "price": 1596.99, "original_price": 1999.99, "shipping": 19.99, "in_stock": true, "rating": 4.6, "reviews": 1420, "url": "https://walmart.com", "badge": "Freight Ship" },
+        { "store": "Target", "price": 1799.99, "original_price": 1999.99, "shipping": 0.00, "in_stock": false, "rating": 4.7, "reviews": 610, "url": "https://target.com", "badge": "Out of Stock" }
+      ]
+    },
+    {
+      "id": "samsung-galaxy-s24-ultra",
+      "category": "Smartphones & Tablets",
+      "name": "Samsung Galaxy S24 Ultra 5G (512GB Titanium Black)",
+      "brand": "Samsung",
+      "msrp": 1419.99,
+      "specs": "Snapdragon 8 Gen 3, 200MP Camera, Galaxy AI, Titanium Frame, S Pen",
+      "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80",
+      "history_90d": {
+        "dates": ["2023-10-01", "2023-10-15", "2023-11-01", "2023-11-20", "2023-11-24", "2023-12-01", "2023-12-15", "2023-12-25", "2024-01-05", "2024-01-15"],
+        "prices": [1419.99, 1419.99, 1379.99, 1299.99, 1249.99, 1299.99, 1349.99, 1399.99, 1299.99, 1219.99]
+      },
+      "stores": [
+        { "store": "Amazon", "price": 1219.99, "original_price": 1419.99, "shipping": 0.00, "in_stock": true, "rating": 4.6, "reviews": 3150, "url": "https://amazon.com", "badge": "Best Deal" },
+        { "store": "Best Buy", "price": 1299.99, "original_price": 1419.99, "shipping": 0.00, "in_stock": true, "rating": 4.7, "reviews": 1940, "url": "https://bestbuy.com", "badge": "Trade-in eligible" },
+        { "store": "Samsung Direct", "price": 1319.99, "original_price": 1419.99, "shipping": 0.00, "in_stock": true, "rating": 4.8, "reviews": 6500, "url": "https://samsung.com", "badge": "Exclusive Colors" },
+        { "store": "Walmart", "price": 1349.00, "original_price": 1419.99, "shipping": 0.00, "in_stock": true, "rating": 4.3, "reviews": 410, "url": "https://walmart.com", "badge": "Standard" }
+      ]
+    },
+    {
+      "id": "apple-watch-ultra-2",
+      "category": "Smartwatches & Wearables",
+      "name": "Apple Watch Ultra 2 (GPS + Cellular, 49mm Titanium Case)",
+      "brand": "Apple",
+      "msrp": 799.00,
+      "specs": "S9 SiP, 3000 nits display, Precision Dual-Frequency GPS, 36hr battery, 100m water resistance",
+      "image_url": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80",
+      "history_90d": {
+        "dates": ["2023-10-01", "2023-10-15", "2023-11-01", "2023-11-20", "2023-11-24", "2023-12-01", "2023-12-15", "2023-12-25", "2024-01-05", "2024-01-15"],
+        "prices": [799.00, 799.00, 779.00, 749.00, 729.00, 739.00, 759.00, 779.00, 749.00, 719.00]
+      },
+      "stores": [
+        { "store": "Amazon", "price": 719.00, "original_price": 799.00, "shipping": 0.00, "in_stock": true, "rating": 4.8, "reviews": 2100, "url": "https://amazon.com", "badge": "$80 Off" },
+        { "store": "B&H Photo", "price": 729.00, "original_price": 799.00, "shipping": 0.00, "in_stock": true, "rating": 4.9, "reviews": 620, "url": "https://bhphotovideo.com", "badge": "In Stock" },
+        { "store": "Best Buy", "price": 749.00, "original_price": 799.00, "shipping": 0.00, "in_stock": true, "rating": 4.8, "reviews": 1450, "url": "https://bestbuy.com", "badge": "Store Pickup" },
+        { "store": "Target", "price": 779.99, "original_price": 799.00, "shipping": 0.00, "in_stock": true, "rating": 4.6, "reviews": 310, "url": "https://target.com", "badge": "Standard" }
+      ]
+    }
+  ]
+}
