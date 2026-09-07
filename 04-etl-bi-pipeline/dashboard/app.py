@@ -241,7 +241,8 @@ with tab1:
     if not anomalies.empty:
         for _, row in anomalies.iterrows():
             direction = '📈 Spike' if row['z_score'] > 0 else '📉 Drop'
-            st.markdown(f"<div class='anomaly-alert'>⚠️ <strong>ETL Anomaly — {row['year_month']}</strong> | {direction} of <strong>\</strong> · Z-score: <code>{row['z_score']:.2f}σ</code></div>", unsafe_allow_html=True)
+            diff_val = abs(row['total_revenue'] - mon_mean)
+            st.markdown(f"<div class='anomaly-alert'>⚠️ <strong>ETL Anomaly — {row['year_month']}</strong> | {direction} of <strong>${diff_val:,.0f}</strong> · Z-score: <code>{row['z_score']:.2f}σ</code></div>", unsafe_allow_html=True)
     c1,c2 = st.columns(2)
     with c1:
         fig = px.area(mon, x='year_month', y='total_revenue', title='Monthly Revenue Trend', color_discrete_sequence=['#06b6d4'])
