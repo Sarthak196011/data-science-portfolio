@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEROPLAN PRISMATIC — Vivid 3D Engine</title>
+  
+  <!-- Three.js + OrbitControls + GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 10% 20%, #ffedf5 0%, #ede9fe 40%, #e0f2fe 80%, #ecfdf5 100%);
+      --glass-panel: rgba(255, 255, 255, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.9);
+      
+      /* Vibrant Color Palette */
+      --pink-neon: #ec4899;
+      --coral-flare: #f43f5e;
+      --sunset-orange: #fb923c;
+      --amber-gold: #f59e0b;
+      --emerald-mint: #10b981;
+      --cyan-bright: #06b6d4;
+      --indigo-violet: #6366f1;
+      --purple-electric: #a855f7;
+      --purple-primary: #7c3aed;
+
+      --text-dark: #0f172a;
+      --text-subtle: #64748b;
+      
+      --mesh-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.25), 0 0 1px 1px rgba(255, 255, 255, 0.9);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-gradient);
+      color: var(--text-dark);
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Ambient chromatic blur orbs in background */
+    .color-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+    .orb-1 { width: 450px; height: 450px; top: -100px; left: -100px; background: linear-gradient(135deg, var(--coral-flare), var(--pink-neon)); }
+    .orb-2 { width: 500px; height: 500px; bottom: -120px; right: -80px; background: linear-gradient(135deg, var(--cyan-bright), var(--emerald-mint)); }
+    .orb-3 { width: 380px; height: 380px; top: 30%; right: 20%; background: linear-gradient(135deg, var(--purple-electric), var(--indigo-violet)); }
+
+    /* UI Overlay Container */
+    .ui-layer {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px 28px;
+    }
+
+    .interactive {
+      pointer-events: auto;
+    }
+
+    /* Top Navigation Header */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 18px 8px 12px;
+      background: var(--glass-panel);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 9999px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    .brand-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--coral-flare), var(--purple-electric));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #0f172a 0%, #4338ca 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+
+    .badge-vivid {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #06b6d4, #10b981);
+      color: white;
+      box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .circle-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--glass-panel);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark);
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .circle-btn:hover {
+      transform: scale(1.08);
+      background: white;
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+    }
+
+    /* Left Control Sidebar */
+    .sidebar-panel {
+      position: absolute;
+      top: 86px;
+      left: 28px;
+      width: 360px;
+      max-height: calc(100vh - 110px);
+      background: var(--glass-panel);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: var(--mesh-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(99, 102, 241, 0.2) transparent;
+    }
+
+    .sidebar-panel::-webkit-scrollbar {
+      width: 5px;
+    }
+    .sidebar-panel::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.2);
+      border-radius: 9999px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .vivid-select {
+      width: 100%;
+      padding: 12px 38px 12px 14px;
+      border-radius: 14px;
+      background: white;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      appearance: none;
+      outline: none;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      transition: all 0.2s ease;
+    }
+
+    .vivid-select:focus {
+      border-color: var(--indigo-violet);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .select-arrow {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #64748b;
+    }
+
+    /* Search Box */
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 14px;
+      padding: 4px 6px 4px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      position: relative;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      background: transparent;
+    }
+
+    .search-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .find-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      background: linear-gradient(135deg, var(--coral-flare), var(--pink-neon));
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 3px 10px rgba(244, 63, 94, 0.3);
+    }
+
+    .find-btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 5px 15px rgba(244, 63, 94, 0.4);
+    }
+
+    /* Segmented Controls */
+    .segmented-control {
+      display: flex;
+      background: rgba(241, 245, 249, 0.85);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .segment-btn {
+      flex: 1;
+      padding: 8px 4px;
+      border: none;
+      background: transparent;
+      border-radius: 9px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .segment-btn.active {
+      background: #7c3aed;
+      color: white;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+    }
+
+    /* Curated Hubs List */
+    .curated-hubs-container {
+      max-height: 155px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding-right: 4px;
+    }
+
+    .hub-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: white;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hub-card:hover {
+      transform: translateX(3px);
+      border-color: var(--pink-neon);
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.15);
+    }
+
+    .hub-card.active {
+      border-color: var(--pink-neon);
+      background: linear-gradient(135deg, #fff5f8 0%, #ffffff 100%);
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2);
+    }
+
+    .hub-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .hub-coords {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #94a3b8;
+    }
+
+    .hub-chevron {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      transition: transform 0.2s ease;
+    }
+
+    .hub-card.active .hub-chevron {
+      color: var(--pink-neon);
+      transform: translateX(2px);
+    }
+
+    /* Estimated Matrix Cards */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .matrix-card {
+      background: white;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .matrix-title {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .matrix-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #e11d48;
+      letter-spacing: -0.02em;
+    }
+
+    /* Launch CTA Button */
+    .vivid-launch-btn {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.35);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .vivid-launch-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.45);
+    }
+
+    .vivid-launch-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Drawer / Modal for Itinerary Plan */
+    .plan-drawer {
+      position: fixed;
+      top: 0;
+      right: -620px;
+      width: 580px;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-left: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: -15px 0 40px rgba(0, 0, 0, 0.1);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+
+    .plan-drawer.open {
+      right: 0;
+    }
+
+    .drawer-header {
+      padding: 24px 28px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: white;
+    }
+
+    .drawer-title-group h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+
+    .drawer-badges {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .pill-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .close-drawer-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #64748b;
+      transition: all 0.2s ease;
+    }
+
+    .close-drawer-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .plan-section {
+      background: white;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .plan-section-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flight-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    .day-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .day-item {
+      border-left: 3px solid #8b5cf6;
+      padding-left: 14px;
+    }
+
+    .day-header {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #1e1b4b;
+    }
+
+    .day-desc {
+      font-size: 0.8rem;
+      color: #475569;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .drawer-footer {
+      padding: 20px 28px;
+      background: white;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      display: flex;
+      gap: 12px;
+    }
+
+    .export-btn {
+      flex: 1;
+      padding: 12px;
+      background: #0f172a;
+      color: white;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .export-btn:hover {
+      background: #1e293b;
+    }
+
+    /* Backend Connection Status Badge */
+    .backend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      color: #059669;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .backend-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient blur orbs -->
+  <div class="color-orb orb-1"></div>
+  <div class="color-orb orb-2"></div>
+  <div class="color-orb orb-3"></div>
+
+  <!-- Three.js Canvas -->
+  <div id="webgl-canvas"></div>
+
+  <!-- UI Overlay -->
+  <div class="ui-layer">
+    <!-- Header -->
+    <header class="top-bar interactive">
+      <div class="brand-pill">
+        <div class="brand-logo-icon">
+          <i data-lucide="sparkles" style="width: 18px; height: 18px;"></i>
+        </div>
+        <span class="brand-title">Aeroplan Prismatic</span>
+        <span class="badge-vivid">Vivid 3D Engine</span>
+      </div>
+
+      <div class="top-actions">
+        <div class="backend-pill" id="backend-status">
+          <span class="backend-dot"></span>
+          <span>FastAPI Online (8505)</span>
+        </div>
+        <button class="circle-btn" id="reset-cam-btn" title="Reset Camera View">
+          <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+        </button>
+        <button class="circle-btn" id="fullscreen-btn" title="Toggle Fullscreen">
+          <i data-lucide="maximize-2" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Floating Sidebar -->
+    <aside class="sidebar-panel interactive">
+      <!-- Departure Base -->
+      <div>
+        <label class="section-label">
+          <span>Departure Base</span>
+          <i data-lucide="plane-takeoff" style="width: 14px; height: 14px; color: #8b5cf6;"></i>
+        </label>
+        <div class="select-wrap">
+          <select class="vivid-select" id="origin-select">
+            <option value="JFK" selected>New York (JFK) — USA</option>
+            <option value="LHR">London Heathrow (LHR) — UK</option>
+            <option value="HND">Tokyo Haneda (HND) — Japan</option>
+            <option value="DXB">Dubai International (DXB) — UAE</option>
+            <option value="CDG">Paris Charles de Gaulle (CDG) — France</option>
+            <option value="DEL">Delhi Indira Gandhi (DEL) — India</option>
+            <option value="SIN">Singapore Changi (SIN) — Singapore</option>
+            <option value="SYD">Sydney Kingsford Smith (SYD) — Australia</option>
+            <option value="SFO">San Francisco (SFO) — USA</option>
+            <option value="FRA">Frankfurt Airport (FRA) — Germany</option>
+          </select>
+          <i data-lucide="chevron-down" class="select-arrow" style="width: 16px; height: 16px;"></i>
+        </div>
+      </div>
+
+      <!-- Search Destination -->
+      <div>
+        <label class="section-label">
+          <span>Search Earth Destination</span>
+          <i data-lucide="map-pin" style="width: 14px; height: 14px; color: #ec4899;"></i>
+        </label>
+        <div class="search-box">
+          <input type="text" class="search-input" id="search-input" placeholder="Search any island, city, or coast..." />
+          <button class="find-btn" id="search-btn">
+            <i data-lucide="search" style="width: 13px; height: 13px;"></i>
+            Find
+          </button>
+        </div>
+      </div>
+
+      <!-- Travel Class -->
+      <div>
+        <label class="section-label">
+          <span>Travel Class</span>
+        </label>
+        <div class="segmented-control" id="class-control">
+          <button class="segment-btn" data-class="economy">Economy</button>
+          <button class="segment-btn active" data-class="curated">Curated</button>
+          <button class="segment-btn" data-class="first">First Class</button>
+        </div>
+      </div>
+
+      <!-- Trip Duration -->
+      <div>
+        <label class="section-label">
+          <span>Trip Duration</span>
+        </label>
+        <div class="segmented-control" id="duration-control">
+          <button class="segment-btn active" data-days="3">3 Days</button>
+          <button class="segment-btn" data-days="5">5 Days</button>
+          <button class="segment-btn" data-days="7">7 Days</button>
+        </div>
+      </div>
+
+      <!-- Curated Hubs -->
+      <div>
+        <div class="section-label">
+          <span>Curated Hubs</span>
+          <span style="font-size: 0.65rem; color: #8b5cf6; font-weight: 800;">TRENDING</span>
+        </div>
+        <div class="curated-hubs-container" id="hubs-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Estimated Matrix -->
+      <div>
+        <div class="section-label">
+          <span>Estimated Matrix</span>
+        </div>
+        <div class="matrix-grid">
+          <div class="matrix-card">
+            <div class="matrix-title">Flight + Stay</div>
+            <div class="matrix-value" id="matrix-flight-stay">$3,560</div>
+          </div>
+          <div class="matrix-card">
+            <div class="matrix-title">Total Budget</div>
+            <div class="matrix-value" id="matrix-total-budget">$3,749</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Launch Button -->
+      <button class="vivid-launch-btn" id="generate-btn">
+        <i data-lucide="sparkles" style="width: 18px; height: 18px;"></i>
+        <span>Generate Custom Plan</span>
+      </button>
+    </aside>
+  </div>
+
+  <!-- Plan Drawer / Modal -->
+  <div class="plan-drawer" id="plan-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <h2 id="drawer-dest-title">Tokyo, Japan Itinerary</h2>
+        <div class="drawer-badges">
+          <span class="pill-badge" id="drawer-tier-badge">Curated Tier</span>
+          <span class="pill-badge" id="drawer-days-badge">3 Days Plan</span>
+          <span class="pill-badge" id="drawer-route-badge" style="background:#ecfdf5; color:#065f46;">Direct Available</span>
+        </div>
+      </div>
+      <button class="close-drawer-btn" id="close-drawer-btn">
+        <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body" id="drawer-content">
+      <!-- Populated dynamically -->
+    </div>
+
+    <div class="drawer-footer">
+      <button class="export-btn" id="download-json-btn">
+        <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+        Export Plan JSON
+      </button>
+      <button class="export-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6);" onclick="alert('Proceeding to flight and accommodation reservations.')">
+        <i data-lucide="check-circle-2" style="width: 16px; height: 16px;"></i>
+        Reserve Route
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ═════════════════════════════════════════════════════════════════════════
+    // Core Data & State
+    // ═════════════════════════════════════════════════════════════════════════
+    const AIRPORTS = {
+      JFK: { id: "JFK", name: "New York (JFK) — USA", lat: 40.6413, lng: -73.7781 },
+      LHR: { id: "LHR", name: "London Heathrow (LHR) — UK", lat: 51.4700, lng: -0.4543 },
+      HND: { id: "HND", name: "Tokyo Haneda (HND) — Japan", lat: 35.5494, lng: 139.7798 },
+      DXB: { id: "DXB", name: "Dubai International (DXB) — UAE", lat: 25.2532, lng: 55.3657 },
+      CDG: { id: "CDG", name: "Paris Charles de Gaulle (CDG) — France", lat: 49.0097, lng: 2.5479 },
+      DEL: { id: "DEL", name: "Delhi Indira Gandhi (DEL) — India", lat: 28.5562, lng: 77.1000 },
+      SIN: { id: "SIN", name: "Singapore Changi (SIN) — Singapore", lat: 1.3644, lng: 103.9915 },
+      SYD: { id: "SYD", name: "Sydney Kingsford Smith (SYD) — Australia", lat: -33.9399, lng: 151.1753 },
+      SFO: { id: "SFO", name: "San Francisco (SFO) — USA", lat: 37.6213, lng: -122.3790 },
+      FRA: { id: "FRA", name: "Frankfurt Airport (FRA) — Germany", lat: 50.0379, lng: 8.5622 }
+    };
+
+    const CURATED_HUBS = [
+      { id: "tokyo", name: "Tokyo, Japan", city: "Tokyo", lat: 35.6762, lng: 139.6503, lodging: 240, exp: 120 },
+      { id: "reykjavik", name: "Reykjavík, Iceland", city: "Reykjavik", lat: 64.1466, lng: -21.9426, lodging: 290, exp: 160 },
+      { id: "cairo", name: "Cairo, Egypt", city: "Cairo", lat: 30.0444, lng: 31.2357, lodging: 140, exp: 70 },
+      { id: "paris", name: "Paris, France", city: "Paris", lat: 48.8566, lng: 2.3522, lodging: 320, exp: 150 },
+      { id: "bali", name: "Bali, Indonesia", city: "Bali", lat: -8.4095, lng: 115.1889, lodging: 160, exp: 80 },
+      { id: "rio", name: "Rio de Janeiro, Brazil", city: "Rio", lat: -22.9068, lng: -43.1729, lodging: 190, exp: 95 },
+      { id: "capetown", name: "Cape Town, South Africa", city: "Cape Town", lat: -33.9249, lng: 18.4241, lodging: 210, exp: 110 },
+      { id: "swiss_alps", name: "Zermatt, Swiss Alps", city: "Zermatt", lat: 46.0207, lng: 7.7491, lodging: 450, exp: 220 },
+      { id: "santorini", name: "Santorini, Greece", city: "Santorini", lat: 36.3932, lng: 25.4615, lodging: 380, exp: 170 },
+      { id: "dubai", name: "Dubai, UAE", city: "Dubai", lat: 25.2048, lng: 55.2708, lodging: 350, exp: 180 }
+    ];
+
+    let currentOrigin = AIRPORTS.JFK;
+    let currentDest = CURATED_HUBS[0]; // Tokyo
+    let currentClass = "curated";
+    let currentDays = 3;
+    let activePlanData = null;
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // Math & Calculations
+    // ═════════════════════════════════════════════════════════════════════════
+    function haversine(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    function calculateLocalMatrix(origin, dest, travelClass, days) {
+      const dist = haversine(origin.lat, origin.lng, dest.lat, dest.lng);
+      let classMult = 1.75;
+      let lodgingMult = 1.55;
+      let expMult = 1.4;
+
+      if (travelClass === "economy") {
+        classMult = 1.0;
+        lodgingMult = 1.0;
+        expMult = 1.0;
+      } else if (travelClass === "first") {
+        classMult = 3.4;
+        lodgingMult = 2.6;
+        expMult = 2.2;
+      }
+
+      const flightPrice = Math.round((150 + dist * 0.115) * classMult);
+      const lodgingNightly = Math.round((dest.lodging || 240) * lodgingMult);
+      const totalLodging = lodgingNightly * days;
+      const dailyExp = Math.round((dest.exp || 120) * expMult);
+      const totalExp = dailyExp * days;
+
+      const flightAndStay = flightPrice + totalLodging;
+      const totalBudget = flightAndStay + totalExp;
+
+      return {
+        flightPrice,
+        lodgingNightly,
+        totalLodging,
+        flightAndStay,
+        totalBudget,
+        distanceKm: Math.round(dist)
+      };
+    }
+
+    async function updateEstimatedMatrix() {
+      try {
+        // Attempt live API calculation from FastAPI server
+        const res = await fetch("/api/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            origin_id: currentOrigin.id,
+            dest_name: currentDest.name,
+            travel_class: currentClass,
+            duration_days: currentDays,
+            lat: currentDest.lat,
+            lng: currentDest.lng
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          activePlanData = data;
+          document.getElementById("matrix-flight-stay").innerText = data.budget_matrix.formatted.flight_and_stay;
+          document.getElementById("matrix-total-budget").innerText = data.budget_matrix.formatted.total_budget;
+          document.getElementById("backend-status").style.display = "inline-flex";
+          return;
+        }
+      } catch (err) {
+        // Fallback to local calculation
+      }
+
+      const matrix = calculateLocalMatrix(currentOrigin, currentDest, currentClass, currentDays);
+      document.getElementById("matrix-flight-stay").innerText = `$${matrix.flightAndStay.toLocaleString()}`;
+      document.getElementById("matrix-total-budget").innerText = `$${matrix.totalBudget.toLocaleString()}`;
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // Three.js 3D Sphere & Flight Arc Engine
+    // ═════════════════════════════════════════════════════════════════════════
+    let scene, camera, renderer, controls;
+    let earthMesh, atmosphereMesh, arcMesh, planeMarker;
+    let originMarker, destMarker;
+    const GLOBE_RADIUS = 5;
+
+    function initThree() {
+      const container = document.getElementById("webgl-canvas");
+      scene = new THREE.Scene();
+
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 4, 15);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.minDistance = 6.5;
+      controls.maxDistance = 22;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.6;
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      dirLight.position.set(12, 10, 15);
+      scene.add(dirLight);
+
+      const blueRimLight = new THREE.DirectionalLight(0x6366f1, 1.8);
+      blueRimLight.position.set(-15, -8, -10);
+      scene.add(blueRimLight);
+
+      // Create Wireframe Earth Mesh
+      createEarth();
+
+      // Markers & Flight Path
+      updatePinsAndArc();
+
+      window.addEventListener("resize", onWindowResize);
+      animate();
+    }
+
+    function createEarth() {
+      const globeGroup = new THREE.Group();
+
+      // Base globe sphere (deep iridescent gradient)
+      const baseGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
+      const baseMat = new THREE.MeshPhongMaterial({
+        color: 0x1e1b4b,
+        emissive: 0x0f172a,
+        specular: 0x8b5cf6,
+        shininess: 40,
+        transparent: true,
+        opacity: 0.92
+      });
+      earthMesh = new THREE.Mesh(baseGeo, baseMat);
+      globeGroup.add(earthMesh);
+
+      // Wireframe overlay (Prismatic Latitude/Longitude Rings)
+      const wireGeo = new THREE.WireframeGeometry(new THREE.SphereGeometry(GLOBE_RADIUS + 0.03, 36, 18));
+      const wireMat = new THREE.LineBasicMaterial({
+        color: 0x818cf8,
+        transparent: true,
+        opacity: 0.35
+      });
+      const wireframe = new THREE.LineSegments(wireGeo, wireMat);
+      globeGroup.add(wireframe);
+
+      // Outer Atmosphere Glow Ring
+      const atmosGeo = new THREE.SphereGeometry(GLOBE_RADIUS + 0.38, 48, 48);
+      const atmosMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.12,
+        side: THREE.BackSide
+      });
+      atmosphereMesh = new THREE.Mesh(atmosGeo, atmosMat);
+      globeGroup.add(atmosphereMesh);
+
+      // Procedural continents point cloud
+      createContinentParticles(globeGroup);
+
+      scene.add(globeGroup);
+    }
+
+    function createContinentParticles(group) {
+      const count = 3500;
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+
+      for (let i = 0; i < count; i++) {
+        // Distributed spherical coordinates
+        const phi = Math.acos(2 * Math.random() - 1);
+        const theta = 2 * Math.PI * Math.random();
+        const r = GLOBE_RADIUS + 0.05;
+
+        positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        positions[i * 3 + 1] = r * Math.cos(phi);
+        positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+
+        // Gradient colors: cyan to neon pink
+        const ratio = Math.random();
+        colors[i * 3] = ratio > 0.5 ? 0.92 : 0.02; // R
+        colors[i * 3 + 1] = ratio > 0.5 ? 0.28 : 0.71; // G
+        colors[i * 3 + 2] = ratio > 0.5 ? 0.60 : 0.83; // B
+      }
+
+      const particleGeo = new THREE.BufferGeometry();
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const particleMat = new THREE.PointsMaterial({
+        size: 0.07,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.75
+      });
+
+      const points = new THREE.Points(particleGeo, particleMat);
+      group.add(points);
+    }
+
+    function latLngToVector3(lat, lng, radius) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lng + 180) * (Math.PI / 180);
+      return new THREE.Vector3(
+        -radius * Math.sin(phi) * Math.cos(theta),
+        radius * Math.cos(phi),
+        radius * Math.sin(phi) * Math.sin(theta)
+      );
+    }
+
+    function createGlowMarker(colorHex) {
+      const markerGroup = new THREE.Group();
+
+      // Center sphere
+      const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(0.14, 16, 16),
+        new THREE.MeshBasicMaterial({ color: colorHex })
+      );
+      markerGroup.add(sphere);
+
+      // Outer ripple ring
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(0.18, 0.28, 24),
+        new THREE.MeshBasicMaterial({ color: colorHex, side: THREE.DoubleSide, transparent: true, opacity: 0.8 })
+      );
+      markerGroup.add(ring);
+
+      return markerGroup;
+    }
+
+    function updatePinsAndArc() {
+      // Remove previous markers & arc
+      if (originMarker) scene.remove(originMarker);
+      if (destMarker) scene.remove(destMarker);
+      if (arcMesh) scene.remove(arcMesh);
+      if (planeMarker) scene.remove(planeMarker);
+
+      const vOrigin = latLngToVector3(currentOrigin.lat, currentOrigin.lng, GLOBE_RADIUS + 0.12);
+      const vDest = latLngToVector3(currentDest.lat, currentDest.lng, GLOBE_RADIUS + 0.12);
+
+      // Origin Pin: Magenta / Coral
+      originMarker = createGlowMarker(0xec4899);
+      originMarker.position.copy(vOrigin);
+      originMarker.lookAt(0, 0, 0);
+      scene.add(originMarker);
+
+      // Destination Pin: Cyan
+      destMarker = createGlowMarker(0x06b6d4);
+      destMarker.position.copy(vDest);
+      destMarker.lookAt(0, 0, 0);
+      scene.add(destMarker);
+
+      // Compute Parabolic Flight Arc
+      const midPoint = vOrigin.clone().add(vDest).multiplyScalar(0.5);
+      const distance = vOrigin.distanceTo(vDest);
+      const arcHeight = GLOBE_RADIUS + Math.min(2.5, distance * 0.35);
+      midPoint.normalize().multiplyScalar(arcHeight);
+
+      const curve = new THREE.QuadraticBezierCurve3(vOrigin, midPoint, vDest);
+      const points = curve.getPoints(60);
+      const arcGeo = new THREE.BufferGeometry().setFromPoints(points);
+
+      const arcMat = new THREE.LineBasicMaterial({
+        color: 0xf43f5e,
+        linewidth: 3,
+        transparent: true,
+        opacity: 0.85
+      });
+      arcMesh = new THREE.Line(arcGeo, arcMat);
+      scene.add(arcMesh);
+
+      // Traveling Flight Beacon
+      const planeGeo = new THREE.SphereGeometry(0.12, 12, 12);
+      const planeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      planeMarker = new THREE.Mesh(planeGeo, planeMat);
+      scene.add(planeMarker);
+
+      // Animate Beacon along the flight arc
+      let progress = { t: 0 };
+      gsap.to(progress, {
+        t: 1,
+        duration: 3.5,
+        repeat: -1,
+        ease: "power1.inOut",
+        onUpdate: () => {
+          if (planeMarker && curve) {
+            const pos = curve.getPoint(progress.t);
+            planeMarker.position.copy(pos);
+          }
+        }
+      });
+
+      // Smooth Camera Transition to center destination
+      rotateCameraToDestination(currentDest.lat, currentDest.lng);
+    }
+
+    function rotateCameraToDestination(lat, lng) {
+      const targetPos = latLngToVector3(lat, lng, 14);
+      gsap.to(camera.position, {
+        x: targetPos.x,
+        y: targetPos.y + 1.5,
+        z: targetPos.z,
+        duration: 1.8,
+        ease: "power2.out"
+      });
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+
+      // Pulse ring animation
+      const time = Date.now() * 0.003;
+      if (originMarker && originMarker.children[1]) {
+        originMarker.children[1].scale.setScalar(1 + Math.sin(time) * 0.25);
+      }
+      if (destMarker && destMarker.children[1]) {
+        destMarker.children[1].scale.setScalar(1 + Math.cos(time) * 0.25);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // UI Event Handlers & Dynamic Elements
+    // ═════════════════════════════════════════════════════════════════════════
+    function renderHubs() {
+      const container = document.getElementById("hubs-list");
+      container.innerHTML = "";
+
+      CURATED_HUBS.forEach((hub) => {
+        const card = document.createElement("div");
+        card.className = `hub-card ${hub.id === currentDest.id ? "active" : ""}`;
+        card.innerHTML = `
+          <div>
+            <div class="hub-title">${hub.name}</div>
+            <div class="hub-coords">${hub.lat > 0 ? hub.lat.toFixed(1) + '°N' : Math.abs(hub.lat).toFixed(1) + '°S'}, ${hub.lng > 0 ? hub.lng.toFixed(1) + '°E' : Math.abs(hub.lng).toFixed(1) + '°W'}</div>
+          </div>
+          <div class="hub-chevron">›</div>
+        `;
+        card.onclick = () => {
+          document.querySelectorAll(".hub-card").forEach(c => c.classList.remove("active"));
+          card.classList.add("active");
+          currentDest = hub;
+          updatePinsAndArc();
+          updateEstimatedMatrix();
+        };
+        container.appendChild(card);
+      });
+    }
+
+    // Class Controls
+    document.querySelectorAll("#class-control .segment-btn").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll("#class-control .segment-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentClass = btn.getAttribute("data-class");
+        updateEstimatedMatrix();
+      };
+    });
+
+    // Duration Controls
+    document.querySelectorAll("#duration-control .segment-btn").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll("#duration-control .segment-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentDays = parseInt(btn.getAttribute("data-days"));
+        updateEstimatedMatrix();
+      };
+    });
+
+    // Origin Select
+    document.getElementById("origin-select").onchange = (e) => {
+      const id = e.target.value;
+      if (AIRPORTS[id]) {
+        currentOrigin = AIRPORTS[id];
+        updatePinsAndArc();
+        updateEstimatedMatrix();
+      }
+    };
+
+    // Search Input
+    document.getElementById("search-btn").onclick = performSearch;
+    document.getElementById("search-input").onkeydown = (e) => {
+      if (e.key === "Enter") performSearch();
+    };
+
+    function performSearch() {
+      const query = document.getElementById("search-input").value.trim();
+      if (!query) return;
+
+      const found = CURATED_HUBS.find(h => h.name.toLowerCase().includes(query.toLowerCase()) || h.city.toLowerCase().includes(query.toLowerCase()));
+      if (found) {
+        currentDest = found;
+        renderHubs();
+        updatePinsAndArc();
+        updateEstimatedMatrix();
+      } else {
+        // Custom search geocode fallback
+        alert(`Route found for: ${query}. Pinning coordinates on 3D Earth!`);
+        currentDest = {
+          id: "custom",
+          name: query,
+          city: query,
+          lat: (Math.random() * 80) - 20,
+          lng: (Math.random() * 260) - 130,
+          lodging: 250,
+          exp: 130
+        };
+        updatePinsAndArc();
+        updateEstimatedMatrix();
+      }
+    }
+
+    // Reset Camera
+    document.getElementById("reset-cam-btn").onclick = () => {
+      gsap.to(camera.position, { x: 0, y: 4, z: 15, duration: 1.5, ease: "power2.out" });
+    };
+
+    // Fullscreen Toggle
+    document.getElementById("fullscreen-btn").onclick = () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    };
+
+    // Plan Drawer / Itinerary Generation
+    const drawer = document.getElementById("plan-drawer");
+    document.getElementById("close-drawer-btn").onclick = () => drawer.classList.remove("open");
+
+    document.getElementById("generate-btn").onclick = async () => {
+      const btn = document.getElementById("generate-btn");
+      btn.innerHTML = `<i data-lucide="loader-2" class="spin"></i> Computing Plan...`;
+      lucide.createIcons();
+
+      // Ensure latest plan data is ready
+      await updateEstimatedMatrix();
+
+      // Populate Drawer Content
+      document.getElementById("drawer-dest-title").innerText = `${currentDest.name} Journey`;
+      document.getElementById("drawer-tier-badge").innerText = `${currentClass.toUpperCase()} TIER`;
+      document.getElementById("drawer-days-badge").innerText = `${currentDays} DAYS PLAN`;
+
+      const body = document.getElementById("drawer-content");
+      const flightPrice = activePlanData ? activePlanData.budget_matrix.formatted.flight_price : "$2,450";
+      const totalBudget = activePlanData ? activePlanData.budget_matrix.formatted.total_budget : "$3,749";
+      const distance = activePlanData ? `${activePlanData.flight_logistics.distance_km} km` : "10,850 km";
+      const flightTime = activePlanData ? activePlanData.flight_logistics.flight_duration_str : "13h 45m";
+
+      let timelineHtml = "";
+      if (activePlanData && activePlanData.itinerary) {
+        activePlanData.itinerary.forEach(d => {
+          timelineHtml += `
+            <div class="day-item">
+              <div class="day-header">${d.title}</div>
+              <div class="day-desc"><strong>Morning:</strong> ${d.schedule.morning}</div>
+              <div class="day-desc"><strong>Afternoon:</strong> ${d.schedule.afternoon}</div>
+              <div class="day-desc"><strong>Evening:</strong> ${d.schedule.evening}</div>
+            </div>
+          `;
+        });
+      } else {
+        for (let i = 1; i <= currentDays; i++) {
+          timelineHtml += `
+            <div class="day-item">
+              <div class="day-header">Day ${i} — Curated Immersion in ${currentDest.city}</div>
+              <div class="day-desc">VIP architectural exploration, private historic district tasting, and sunset skyline dinner.</div>
+            </div>
+          `;
+        }
+      }
+
+      body.innerHTML = `
+        <!-- Logistics Section -->
+        <div class="plan-section">
+          <div class="plan-section-title">
+            <i data-lucide="plane" style="width: 15px; height: 15px; color: #ec4899;"></i>
+            Flight & Airfare Details
+          </div>
+          <div class="flight-card">
+            <div>
+              <div style="font-size: 0.95rem; font-weight: 800; color: #0f172a;">${currentOrigin.id} ➔ ${currentDest.city}</div>
+              <div style="font-size: 0.78rem; color: #64748b; margin-top: 2px;">Non-stop • ${flightTime} • ${distance}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 1.15rem; font-weight: 800; color: #ec4899;">${flightPrice}</div>
+              <div style="font-size: 0.7rem; color: #059669; font-weight: 700;">Direct Route</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget Matrix Breakdown -->
+        <div class="plan-section">
+          <div class="plan-section-title">
+            <i data-lucide="wallet" style="width: 15px; height: 15px; color: #8b5cf6;"></i>
+            Comprehensive Cost Matrix
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: #64748b;">Roundtrip Flight</span>
+              <strong>${flightPrice}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: #64748b;">Luxury Hotel (${currentDays} Nights)</span>
+              <strong>${activePlanData ? activePlanData.budget_matrix.formatted.lodging_total : "$1,110"}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: #64748b;">Curated Dining & Experiences</span>
+              <strong>$504</strong>
+            </div>
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 8px; display: flex; justify-content: space-between; font-size: 1rem; font-weight: 800; color: #0f172a;">
+              <span>Total Estimated Investment</span>
+              <span style="color: #e11d48;">${totalBudget}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day by Day Timeline -->
+        <div class="plan-section">
+          <div class="plan-section-title">
+            <i data-lucide="calendar" style="width: 15px; height: 15px; color: #06b6d4;"></i>
+            Day-by-Day Curated Itinerary
+          </div>
+          <div class="day-timeline">
+            ${timelineHtml}
+          </div>
+        </div>
+      `;
+
+      btn.innerHTML = `<i data-lucide="sparkles" style="width: 18px; height: 18px;"></i> <span>Generate Custom Plan</span>`;
+      lucide.createIcons();
+      drawer.classList.add("open");
+    };
+
+    // Export Plan JSON
+    document.getElementById("download-json-btn").onclick = () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(activePlanData || {
+        destination: currentDest,
+        origin: currentOrigin,
+        class: currentClass,
+        days: currentDays
+      }, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `aeroplan_${currentDest.city.toLowerCase()}_plan.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    };
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // Initialization
+    // ═════════════════════════════════════════════════════════════════════════
+    window.onload = () => {
+      lucide.createIcons();
+      renderHubs();
+      initThree();
+      updateEstimatedMatrix();
+    };
+  </script>
+</body>
+</html>
