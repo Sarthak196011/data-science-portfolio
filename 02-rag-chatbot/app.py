@@ -42,9 +42,7 @@ with st.sidebar:
         help="Your documents are processed locally — nothing is stored on external servers."
     )
 
-    openai_key = st.text_input("OpenAI API Key (optional)", type="password",
-                               placeholder="sk-... (leave blank for demo mode)")
-    st.caption("🔒 Keys are never stored or logged.")
+    openai_key = os.environ.get("OPENAI_API_KEY", "")
 
     st.divider()
     st.markdown("**🗣️ Language Settings**")
@@ -81,8 +79,6 @@ with st.sidebar:
     st.markdown("**Settings**")
     top_k    = st.slider("Sources to retrieve (k)", 2, 8, 4)
     use_demo = not bool(openai_key)
-    if use_demo:
-        st.info("🎭 Demo mode active.")
 
 # ── Session state ──────────────────────────────────────────────────────────────
 if "messages"    not in st.session_state: st.session_state.messages    = []

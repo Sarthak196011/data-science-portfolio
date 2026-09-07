@@ -122,6 +122,6 @@ def answer_question(
     # Add verified source citations
     output_lines.append("\n---")
     output_lines.append(f"📁 **Source Document:** `{sources[0] if sources else 'Uploaded File'}`")
-    output_lines.append("*💡 Note: Running in Intelligent Demo Mode. You can also connect an OpenAI API key in the sidebar for full conversational reasoning.*")
+
 
     return "\n".join(output_lines), sources
